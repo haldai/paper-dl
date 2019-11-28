@@ -18,7 +18,7 @@ while [ ! -f "$script_dir/temporary files/jmlr root.html" ]; do
     if [ $(curl -o /dev/null -sIL -w %{http_code} $jmlr_root) == 200 ]; then
         curl -s "$jmlr_root" -o "$script_dir/temporary files/jmlr root.html"
     else
-        echo -e "can't download $jmlr_root!"
+        echo "can't download $jmlr_root!"
         exit
     fi
 done
@@ -27,7 +27,7 @@ folder=$(cat "$script_dir/temporary files/jmlr root.html" | grep "Volume $1" | s
 volume=$(cat "$script_dir/temporary files/jmlr root.html" | grep "Volume $1" | sed "s/.*href=\"\(.*\)\".*/\1/g")
 rm "$script_dir/temporary files/jmlr root.html"
 if [ -z "$folder" ]; then
-    echo -e "illegal volume number, exit!"
+    echo "illegal volume number, exit!"
     exit
 fi
 
