@@ -18,7 +18,7 @@
 find 8 paper(s), download them all (Y/n): 
 
 1/8 (12.50%)  6675-improved-dynamic-regret-for-non-degenerate-functions
-download pdf:
+download paper:
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100  177k  100  177k    0     0   142k      0  0:00:01  0:00:01 --:--:--  142k
@@ -36,7 +36,7 @@ download review:
 100  5655  100  5655    0     0  13826      0 --:--:-- --:--:-- --:--:-- 13826
 
 2/8 (25.00%)  6716-improving-regret-bounds-for-combinatorial-semi-bandits-with-probabilistically-triggered-arms-and-its-applications
-download pdf:
+download paper:
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100  341k  100  341k    0     0   210k      0  0:00:01  0:00:01 --:--:--  210k

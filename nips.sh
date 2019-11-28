@@ -117,10 +117,10 @@ if [ "$start" != 'n' ]; then
         pdf_url=$(cat "$script_dir/$folder/$paper_id.html" | grep "PDF" | sed -e "s/.*href=\"\(.*\)\".*/\1/g")
         while [ ! -f "$script_dir/$folder/$paper_name/$paper_name.pdf" ]; do
             if [ $(curl -o /dev/null -sIL -w %{http_code} "$host$pdf_url") == 200 ]; then
-                echo -e "download pdf:"
+                echo -e "download paper:"
                 curl "$host$pdf_url" -o "$script_dir/$folder/$paper_name/$paper_name.pdf"
             else
-                echo -e "can't download pdf:"
+                echo -e "can't download paper:"
             fi
         done
 
