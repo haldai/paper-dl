@@ -32,9 +32,9 @@ if [ -z "$folder" ]; then
 fi
 
 host=http://proceedings.mlr.press/$volume/
-while [ ! -f "$script_dir/temporary files/jmlr-$volume.html" ]; do
+while [ ! -f "$script_dir/temporary files/jmlr $volume.html" ]; do
     if [ $(curl -o /dev/null -sIL -w %{http_code} $host) == 200 ]; then
-        curl -s "$host" -o "$script_dir/temporary files/jmlr-$volume.html"
+        curl -s "$host" -o "$script_dir/temporary files/jmlr $volume.html"
     else
         echo -e "can't download $host!"
         exit
@@ -48,7 +48,7 @@ else
 fi
 
 if [ ${#@} == 1 ]; then
-    total=$(cat "$script_dir/jmlr-$volume.html" | grep \"title\" | wc -l)
+    total=$(cat "$script_dir/jmlr $volume.html" | grep \"title\" | wc -l)
     while read -r line; do
         if [[ "$line" =~ "\"title\"" ]]; then
             title=$(echo $line | cut -d '>' -f 2 | cut -d '<' -f 1)
@@ -57,7 +57,7 @@ if [ ${#@} == 1 ]; then
         if [[ "$line" =~ "Download PDF" ]]; then
             echo "url: $line" >>"$script_dir/select"
         fi
-    done <"$script_dir/temporary files/jmlr-$volume.html"
+    done <"$script_dir/temporary files/jmlr $volume.html"
 else
     total=0
     url_line=0
@@ -84,9 +84,9 @@ else
                 url_line=0
             fi
         fi
-    done <"$script_dir/temporary files/jmlr-$volume.html"
+    done <"$script_dir/temporary files/jmlr $volume.html"
 fi
-# rm "$script_dir/temporary files/jmlr-$volume.html"
+# rm "$script_dir/temporary files/jmlr $volume.html"
 
 if [ $total -gt 0 ]; then
     num=0
