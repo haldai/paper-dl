@@ -41,7 +41,7 @@ function delete() {
     esac
 }
 
-# d_curl "http://proceedings.mlr.press/" "html/jmlr root.html" s
+# d_curl "http://proceedings.mlr.press/" "html/jmlr root.html" [s]
 function d_curl() {
     while [ ! -f "$2" ]; do
         if [ $(curl -o /dev/null -sIL -w %{http_code} "$1") == 200 ]; then
