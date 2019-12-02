@@ -13,18 +13,18 @@ script_dir=$(dirname $0)
 # 创建保存html文件的目录
 create d "$script_dir/html"
 
-# 下载jmlr根目录
-d_curl "http://proceedings.mlr.press/" "$script_dir/html/jmlr.html"
+# 下载pmlr根目录
+d_curl "http://proceedings.mlr.press/" "$script_dir/html/pmlr.html"
 
-folder=$(cat "$script_dir/html/jmlr.html" | sed -n "s/.*$1.*\/a. \(.*\)/\1/p")
-volume=$(cat "$script_dir/html/jmlr.html" | sed -n "s/.*href=\"\(.*\)\".*$1.*/\1/p")
-delete f "$script_dir/html/jmlr.html"
+folder=$(cat "$script_dir/html/pmlr.html" | sed -n "s/.*$1.*\/a. \(.*\)/\1/p")
+volume=$(cat "$script_dir/html/pmlr.html" | sed -n "s/.*href=\"\(.*\)\".*$1.*/\1/p")
+delete f "$script_dir/html/pmlr.html"
 if [ -z "$folder" ]; then
     echo -e "${red}Error: illegal volume number!${nc}" && exit 1
 fi
 
 # 下载指定的卷目录
-d_curl "http://proceedings.mlr.press/$volume/" "$script_dir/html/jmlr-$volume.html"
+d_curl "http://proceedings.mlr.press/$volume/" "$script_dir/html/pmlr-$volume.html"
 
 # 读取文章列表
 i=0 && j=0 && url_line=0
@@ -54,7 +54,7 @@ while read -r line; do
             fi
         fi
     fi
-done <"$script_dir/html/jmlr-$volume.html"
+done <"$script_dir/html/pmlr-$volume.html"
 
 if [ "$i" -gt 0 ]; then
     while [ "$i" -gt 0 ]; do
