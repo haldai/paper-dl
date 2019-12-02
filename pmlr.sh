@@ -3,7 +3,7 @@
 source util.sh
 
 # 如果没有输入参数
-if [ ${#@} == 0 ]; then
+if [ $# == 0 ]; then
     echo -e "${red}Error: please input the volume number!${nc}" && exit 1
 fi
 
@@ -30,7 +30,7 @@ d_curl "http://proceedings.mlr.press/$volume/" "$script_dir/html/pmlr-$volume.ht
 i=0 && j=0 && url_line=0
 while read -r line; do
     if [[ "$line" =~ "\"title\"" ]]; then
-        if [ ${#@} == 1 ]; then # 如果只有卷号 直接保存进数组
+        if [ $# == 1 ]; then # 如果只有卷号 直接保存进数组
             title_array[$i]=$(echo $line | sed -n "s/.*title\".\(.*\).\/p.*/\1/p") && ((i++))
         else # 如果还有关键词
             keywords_find=1
@@ -46,7 +46,7 @@ while read -r line; do
         fi
     fi
     if [[ "$line" =~ "Download PDF" ]]; then
-        if [ ${#@} == 1 ]; then # 如果只有卷号 直接保存进数组
+        if [ $# == 1 ]; then # 如果只有卷号 直接保存进数组
             url_array[$j]="$line" && ((j++))
         else # 如果还有关键词
             if [ "$url_line" == 1 ]; then
@@ -160,15 +160,18 @@ if [ "$total" -gt 0 ]; then
             fi
 
             if [[ "${url_array[$i]}" =~ "Supplementary PDF" ]]; then
-                pdf_url=$(echo "${url_array[$i]}" | sed -n "s/.*Download PDF.*href=\"\(.*-supp.pdf\)\" target.*/\1/p")
-                pdf_url_array=(${pdf_url//\// })
-                pdf_name=${pdf_url_array[-1]}
-                if [ -f "$script_dir/$folder/$title/$pdf_name" ]; then
+                supp_url=$(echo "${url_array[$i]}" | sed -n "s/.*Download PDF.*href=\"\(.*-supp.pdf\)\" target.*/\1/p")
+                supp_url_array=(${supp_url//\// })
+                supp_name=${supp_url_array[-1]}
+                if [ -f "$script_dir/$folder/$title/$supp_name" ]; then
                     echo -e "${yellow}Supplementary already exists!${nc}"
                 else
                     echo -e "${yellow}Download supplementary: ${nc}"
-                    d_curl "$pdf_url" "$script_dir/$folder/$title/$pdf_name" ns
+                    d_curl "$supp_url" "$script_dir/$folder/$title/$supp_name" ns
                 fi
+
+                # 合并
+                pdftk "$script_dir/$folder/$title/$pdf_name" "$script_dir/$folder/$title/$supp_name" cat output "$script_dir/$folder/$title/${pdf_name:0:-4}-merge.pdf"
             fi
         fi
         ((i++))

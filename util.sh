@@ -50,8 +50,10 @@ function d_curl() {
             else
                 curl "$1" -o "$2"
             fi
+            return 1
         else
-            echo -e "${red}Can't download $1!${nc}" && exit 1
+            echo -e "${red}Can't download $1!${nc}"
+            return 0
         fi
     done
 }

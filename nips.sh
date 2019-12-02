@@ -14,7 +14,7 @@ script_dir=$(dirname $0)
 create d "$script_dir/html"
 
 # 下载nips根目录
-d_curl "http://papers.nips.cc/" "$script_dir/html/nips.html" s
+d_curl "http://papers.nips.cc/" "$script_dir/html/nips.html" ns
 
 year_url=$(cat "$script_dir/html/nips.html" | sed -n "s/.*href=\"\(.*\)\".*NIPS $1.*/\1/p")
 folder=$(cat "$script_dir/html/nips.html" | sed -n "s/.*\".\(.*NIPS $1.*\).\/a.*/\1/p")
@@ -24,7 +24,7 @@ if [ -z "$year_url" ]; then
 fi
 
 # 下载指定的卷目录
-d_curl "http://papers.nips.cc$year_url" "$script_dir/html/nips-$1.html" s
+d_curl "http://papers.nips.cc$year_url" "$script_dir/html/nips-$1.html" ns
 
 # 读取文章列表
 i=0 && j=0
@@ -157,26 +157,26 @@ if [ "$total" -gt 0 ]; then
             fi
 
             bib_url=$(cat "$script_dir/html/paper.html" | sed -n "s/.*href=\"\(.*\)\".*BibTeX.*/\1/p")
-            if [ -f "$script_dir/$folder/$title/$pdf_name.bib" ]; then
+            if [ -f "$script_dir/$folder/$title/${pdf_name:0:-4}.bib" ]; then
                 echo -e "${yellow}Bib already exists!${nc}"
             else
                 echo -e "${yellow}Download bib: ${nc}"
-                d_curl "http://papers.nips.cc$bib_url" "$script_dir/$folder/$title/$pdf_name.bib" ns
+                d_curl "http://papers.nips.cc$bib_url" "$script_dir/$folder/$title/${pdf_name:0:-4}.bib" ns
             fi
 
             supplemental_url=$(cat "$script_dir/html/paper.html" | sed -n "s/.*href=\"\(.*\)\".*Supplemental.*/\1/p")
-            if [ -f "$script_dir/$folder/$title/$pdf_name.zip" ]; then
+            if [ -f "$script_dir/$folder/$title/${pdf_name:0:-4}.zip" ]; then
                 echo -e "${yellow}Supplemental already exists!${nc}"
             else
                 echo -e "${yellow}Download Supplemental: ${nc}"
-                d_curl "http://papers.nips.cc$supplemental_url" "$script_dir/$folder/$title/$pdf_name.zip" ns
+                d_curl "http://papers.nips.cc$supplemental_url" "$script_dir/$folder/$title/${pdf_name:0:-4}.zip" ns
             fi
 
             review_url=$(cat "$script_dir/html/paper.html" | sed -n "s/.*href=\"\/\/\(.*\)\".*Reviews.*/\1/p")
             if [ -f "$script_dir/$folder/$title/review.html" ]; then
-                echo -e "${yellow}Reviews already exists!${nc}"
+                echo -e "${yellow}Review already exists!${nc}"
             else
-                echo -e "${yellow}Download reviews: ${nc}"
+                echo -e "${yellow}Download review: ${nc}"
                 d_curl "$review_url" "$script_dir/$folder/$title/review.html" ns
             fi
 
