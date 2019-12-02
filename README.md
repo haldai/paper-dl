@@ -3,7 +3,7 @@
 - NIPS：[https://papers.nips.cc/](https://papers.nips.cc/)
 
 ## 依赖
-　　脚本依赖curl
+　　curl
 
 ## 用法
 　　脚本需放到$PATH变量中的某个路径，输入参数至少一个，jmlr.sh为卷号，nips.sh为年份，此外支持关键词查询：
