@@ -1,10 +1,10 @@
-　　该项目的脚本可以批量下载AI领域相关会议的文集，目前支持的网站有
+　　批量下载AI领域相关会议的文集，目前支持的网站有
 - PMLR：[http://proceedings.mlr.press/](http://proceedings.mlr.press/)
 - NIPS：[https://papers.nips.cc/](https://papers.nips.cc/)
 
 ## 依赖
-- curl：下载工具
-- pdftk：合并pdf
+- curl：下载
+- pdftk：合并正文和附录
 
 ## 用法
 　　下载`git clone https://github.com/murongxixi/download-paper.git`并将该目录添加到$PATH变量中。
