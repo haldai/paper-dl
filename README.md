@@ -65,35 +65,35 @@ Supplementary already exists!
 Download paper: 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  376k  100  376k    0     0   256k      0  0:00:01  0:00:01 --:--:--  256k
+100  376k  100  376k    0     0   231k      0  0:00:01  0:00:01 --:--:--  231k
 Download bib: 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   587    0   587    0     0   1122      0 --:--:-- --:--:-- --:--:--  1122
+100   587    0   587    0     0   1124      0 --:--:-- --:--:-- --:--:--  1122
 Download Supplemental: 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  288k  100  288k    0     0   226k      0  0:00:01  0:00:01 --:--:--  226k
+100  288k  100  288k    0     0   198k      0  0:00:01  0:00:01 --:--:--  198k
 Download reviews: 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 12022  100 12022    0     0  28420      0 --:--:-- --:--:-- --:--:-- 28420
+100 12022  100 12022    0     0  29393      0 --:--:-- --:--:-- --:--:-- 29393
 
 2/2 (100.00%) Uncertainty Sampling is Preconditioned Stochastic Gradient Descent on Zero-One Loss
 Download paper: 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  376k  100  376k    0     0   257k      0  0:00:01  0:00:01 --:--:--  257k
+100  697k  100  697k    0     0   279k      0  0:00:02  0:00:02 --:--:--  279k
 Download bib: 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   587    0   587    0     0   1120      0 --:--:-- --:--:-- --:--:--  1120
+100   553    0   553    0     0   1012      0 --:--:-- --:--:-- --:--:--  1012
 Download Supplemental: 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  288k  100  288k    0     0   203k      0  0:00:01  0:00:01 --:--:--  203k
+100  195k  100  195k    0     0   157k      0  0:00:01  0:00:01 --:--:--  157k
 Download reviews: 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 12022  100 12022    0     0  24434      0 --:--:-- --:--:-- --:--:-- 24385
+100 12371  100 12371    0     0  29245      0 --:--:-- --:--:-- --:--:-- 29245
 ```
