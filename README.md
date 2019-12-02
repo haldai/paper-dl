@@ -9,7 +9,7 @@
 　　脚本(包括util.sh)需放到$PATH变量中的某个路径，运行脚本时至少要有一个输入参数，jmlr.sh为卷号，nips.sh为年份：
 ```shell
 ┌─[murongxixi@murongxixi-xps] - [~] - [六 11月 30, 04:56]
-└─[$] <> jmlr.sh 97
+└─[$] <> pmlr.sh 97
 773 Natural Analysts in Adaptive Data Analysis
 772 Fast Context Adaptation via Meta-Learning
 771 Beating Stochastic and Adversarial Semi-bandits Optimally and Simultaneously
