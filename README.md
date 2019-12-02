@@ -59,5 +59,41 @@ Supplementary already exists!
 2 Zeroth-order (Non)-Convex Stochastic Optimization via Conditional Gradient and Gradient Updates
 1 Gradient Descent Meets Shift-and-Invert Preconditioning for Eigenvector Computation
 ==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (3)
-==>
+==> ^1
+
+1/2 (50.00%) Zeroth-order (Non)-Convex Stochastic Optimization via Conditional Gradient and Gradient Updates
+Download paper: 
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  376k  100  376k    0     0   256k      0  0:00:01  0:00:01 --:--:--  256k
+Download bib: 
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   587    0   587    0     0   1122      0 --:--:-- --:--:-- --:--:--  1122
+Download Supplemental: 
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  288k  100  288k    0     0   226k      0  0:00:01  0:00:01 --:--:--  226k
+Download reviews: 
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 12022  100 12022    0     0  28420      0 --:--:-- --:--:-- --:--:-- 28420
+
+2/2 (100.00%) Uncertainty Sampling is Preconditioned Stochastic Gradient Descent on Zero-One Loss
+Download paper: 
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  376k  100  376k    0     0   257k      0  0:00:01  0:00:01 --:--:--  257k
+Download bib: 
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   587    0   587    0     0   1120      0 --:--:-- --:--:-- --:--:--  1120
+Download Supplemental: 
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  288k  100  288k    0     0   203k      0  0:00:01  0:00:01 --:--:--  203k
+Download reviews: 
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 12022  100 12022    0     0  24434      0 --:--:-- --:--:-- --:--:-- 24385
 ```

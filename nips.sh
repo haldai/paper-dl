@@ -180,7 +180,7 @@ if [ "$total" -gt 0 ]; then
                 d_curl "$review_url" "$script_dir/$folder/$title/review.html" ns
             fi
 
-            delete "$script_dir/html/paper.html"
+            delete f "$script_dir/html/paper.html"
         fi
         ((i++))
     done
