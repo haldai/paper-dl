@@ -14,7 +14,7 @@ script_dir=$(dirname $0)
 create d "$script_dir/html"
 
 # 下载pmlr根目录
-d_curl "http://proceedings.mlr.press/" "$script_dir/html/pmlr.html"
+d_curl "http://proceedings.mlr.press/" "$script_dir/html/pmlr.html" s
 
 folder=$(cat "$script_dir/html/pmlr.html" | sed -n "s/.*$1.*\/a. \(.*\)/\1/p")
 volume=$(cat "$script_dir/html/pmlr.html" | sed -n "s/.*href=\"\(.*\)\".*$1.*/\1/p")
@@ -24,7 +24,7 @@ if [ -z "$folder" ]; then
 fi
 
 # 下载指定的卷目录
-d_curl "http://proceedings.mlr.press/$volume/" "$script_dir/html/pmlr-$volume.html"
+d_curl "http://proceedings.mlr.press/$volume/" "$script_dir/html/pmlr-$volume.html" s
 
 # 读取文章列表
 i=0 && j=0 && url_line=0

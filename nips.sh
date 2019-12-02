@@ -14,7 +14,7 @@ script_dir=$(dirname $0)
 create d "$script_dir/html"
 
 # 下载nips根目录
-d_curl "http://papers.nips.cc/" "$script_dir/html/nips.html"
+d_curl "http://papers.nips.cc/" "$script_dir/html/nips.html" s
 
 year_url=$(cat "$script_dir/html/nips.html" | sed -n "s/.*href=\"\(.*\)\".*NIPS $1.*/\1/p")
 folder=$(cat "$script_dir/html/nips.html" | sed -n "s/.*\".\(.*NIPS $1.*\).\/a.*/\1/p")
@@ -24,7 +24,7 @@ if [ -z "$year_url" ]; then
 fi
 
 # 下载指定的卷目录
-d_curl "http://papers.nips.cc$year_url" "$script_dir/html/nips-$1.html"
+d_curl "http://papers.nips.cc$year_url" "$script_dir/html/nips-$1.html" s
 
 # 读取文章列表
 i=0 && j=0
