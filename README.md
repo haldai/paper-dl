@@ -3,7 +3,7 @@
 - NIPS：[https://papers.nips.cc/](https://papers.nips.cc/)
 
 ## 依赖
-　　curl
+　　curl、pdftk
 
 ## 用法
 　　下载`git clone https://github.com/murongxixi/download-paper.git`并将该目录添加到$PATH变量中。
