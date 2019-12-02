@@ -57,7 +57,7 @@ if [ "$i" -gt 0 ]; then
     while [ "$i" -gt 0 ]; do
         echo -e "${purple}$i${nc} ${title_array[$(($i - 1))]}" && ((i--)) && select_array[$i]=0 # 倒序输出查询结果
     done
-    echo -e "${yellow}==> Papers to download (eg: 1 2 3, 1-3 or ^4), default all ($len)${nc}"
+    echo -e "${yellow}==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all ($len)${nc}"
     read -p $'\033[33m==> \033[0m' input
 else
     echo -e "${red}Warning: no papers meet the query conditions!${nc}" && exit 1
