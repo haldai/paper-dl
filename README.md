@@ -1,8 +1,12 @@
-　　该项目保存可以批量下载AI相关论文的脚本，目前支持的网站有
+　　该项目的脚本可以批量下载AI领域相关会议和期刊的论文，目前支持的网站有
 - JMLR：[http://proceedings.mlr.press/](http://proceedings.mlr.press/)
 - NIPS：[https://papers.nips.cc/](https://papers.nips.cc/)
 
-　　脚本依赖curl，每个脚本需至少一个参数，jmlr.sh的参数为卷号，nips.sh的参数为年份，此外支持关键字查询：
+## 依赖
+　　脚本依赖curl
+
+## 用法
+　　脚本需放到$PATH变量中的某个路径，输入参数至少一个，jmlr.sh为卷号，nips.sh为年份，此外支持关键词查询：
 ```shell
 ┌─[murongxixi@murongxixi-xps] - [~] - [六 11月 30, 04:56]
 └─[$] <> jmlr.sh 97 margin
@@ -39,4 +43,14 @@ Download paper:
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100  343k  100  343k    0     0   221k      0  0:00:01  0:00:01 --:--:--  221k
+```
+关键词可以有多个：
+```
+┌─[murongxixi@murongxixi-xps] - [~/.cache/i3lock/current] - [一 12月 02, 11:07]
+└─[$] <> nips.sh 2018 condition gradient  
+3 Uncertainty Sampling is Preconditioned Stochastic Gradient Descent on Zero-One Loss
+2 Zeroth-order (Non)-Convex Stochastic Optimization via Conditional Gradient and Gradient Updates
+1 Gradient Descent Meets Shift-and-Invert Preconditioning for Eigenvector Computation
+==> Papers to download (eg: 1 2 3, 1-3 or ^4), default all (3)
+==>
 ```
