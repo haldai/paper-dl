@@ -6,7 +6,7 @@
 　　curl
 
 ## 用法
-　　下载仓库`git clone https://github.com/murongxixi/download-paper.git`并将该目录添加到$PATH变量中。
+　　下载`git clone https://github.com/murongxixi/download-paper.git`并将该目录添加到$PATH变量中。
 
 　　第一次运行时会自动创建html目录并缓存必要的网页，运行脚本时至少要有一个参数，pmlr.sh为卷号，nips.sh为年份：
 ```shell
