@@ -1,5 +1,5 @@
-　　该项目的脚本可以批量下载AI领域相关会议和期刊的论文，目前支持的网站有
-- JMLR：[http://proceedings.mlr.press/](http://proceedings.mlr.press/)
+　　该项目的脚本可以批量下载AI领域相关会议的文集，目前支持的网站有
+- PMLR：[http://proceedings.mlr.press/](http://proceedings.mlr.press/)
 - NIPS：[https://papers.nips.cc/](https://papers.nips.cc/)
 
 ## 依赖
@@ -16,11 +16,11 @@
 770 Latent Normalizing Flows for Discrete Sequences
 769 Surrogate Losses for Online Learning of Stepsizes in Stochastic Non-Convex Optimization
 ……
-5 Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin
-4 Does Data Augmentation Lead to Positive Margin?
-3 Lexicographic and Depth-Sensitive Margins in Homogeneous and Non-Homogeneous Deep Models
-2 Optimal Minimal Margin Maximization with Boosting
-1 Fast and Flexible Inference of Joint Distributions from their Marginals
+5 Distributed Learning with Sublinear Communication
+4 Communication-Constrained Inference and the Role of Shared Randomness
+3 MixHop: Higher-Order Graph Convolutional Architectures via Sparsified Neighborhood Mixing
+2 Dynamic Weights in Multi-Objective Deep Reinforcement Learning
+1 AReS and MaRS Adversarial and MMD-Minimizing Regression for SDEs
 ==> papers to download (eg: 1 2 3, 1-3 or ^4), default all (773)
 ==> 67 97-98
 
