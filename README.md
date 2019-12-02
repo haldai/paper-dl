@@ -6,45 +6,50 @@
 　　curl
 
 ## 用法
-　　脚本(包括util.sh)需放到$PATH变量中的某个路径，输入参数至少一个，jmlr.sh为卷号，nips.sh为年份，此外支持关键词查询：
+　　脚本(包括util.sh)需放到$PATH变量中的某个路径，输入参数至少一个，jmlr.sh为卷号，nips.sh为年份：
 ```shell
 ┌─[murongxixi@murongxixi-xps] - [~] - [六 11月 30, 04:56]
-└─[$] <> jmlr.sh 97 margin
+└─[$] <> jmlr.sh 97
+773 Natural Analysts in Adaptive Data Analysis
+772 Fast Context Adaptation via Meta-Learning
+771 Beating Stochastic and Adversarial Semi-bandits Optimally and Simultaneously
+770 Latent Normalizing Flows for Discrete Sequences
+769 Surrogate Losses for Online Learning of Stepsizes in Stochastic Non-Convex Optimization
+……
 5 Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin
 4 Does Data Augmentation Lead to Positive Margin?
 3 Lexicographic and Depth-Sensitive Margins in Homogeneous and Non-Homogeneous Deep Models
 2 Optimal Minimal Margin Maximization with Boosting
 1 Fast and Flexible Inference of Joint Distributions from their Marginals
-==> papers to download (eg: 1 2 3, 1-3 or ^4), default all (5)
-==> 2 4-5
+==> papers to download (eg: 1 2 3, 1-3 or ^4), default all (773)
+==> 67 97-98
 
-1/3 (33.33%) Optimal Minimal Margin Maximization with Boosting
+1/3 (33.33%) A Kernel Perspective for Regularizing Deep Neural Networks
 Download paper: 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 4019k  100 4019k    0     0   505k      0  0:00:07  0:00:07 --:--:--  684k
+100  347k  100  347k    0     0  29218      0  0:00:12  0:00:12 --:--:-- 15375
 Download supplementary: 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 5666k  100 5666k    0     0   972k      0  0:00:05  0:00:05 --:--:-- 1260k
+100  683k  100  683k    0     0  13533      0  0:00:51  0:00:51 --:--:-- 10077
 
-2/3 (66.67%) Does Data Augmentation Lead to Positive Margin?
+2/3 (66.67%) On Symmetric Losses for Learning from Corrupted Labels
 Download paper: 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  700k  100  700k    0     0   363k      0  0:00:01  0:00:01 --:--:--  363k
+100  706k  100  706k    0     0  13146      0  0:00:55  0:00:55 --:--:--  9593
 Download supplementary: 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  777k  100  777k    0     0   367k      0  0:00:02  0:00:02 --:--:--  367k
+100  504k  100  504k    0     0  21951      0  0:00:23  0:00:23 --:--:-- 20634
 
-3/3 (100.00%) Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin
-Download paper: 
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  343k  100  343k    0     0   221k      0  0:00:01  0:00:01 --:--:--  221k
+3/3 (100.00%) Online learning with kernel losses
+Paper already exists!
+Supplementary already exists!
 ```
-关键词可以有多个：
+
+　　此外支持关键词查询：
 ```
 ┌─[murongxixi@murongxixi-xps] - [~] - [一 12月 02, 11:07]
 └─[$] <> nips.sh 2018 condition gradient  

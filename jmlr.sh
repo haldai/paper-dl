@@ -18,7 +18,7 @@ d_curl "http://proceedings.mlr.press/" "$script_dir/html/jmlr.html"
 
 folder=$(cat "$script_dir/html/jmlr.html" | sed -n "s/.*$1.*\/a. \(.*\)/\1/p")
 volume=$(cat "$script_dir/html/jmlr.html" | sed -n "s/.*href=\"\(.*\)\".*$1.*/\1/p")
-# delete f "$script_dir/html/jmlr.html"
+delete f "$script_dir/html/jmlr.html"
 if [ -z "$folder" ]; then
     echo -e "${red}Error: illegal volume number!${nc}" && exit 1
 fi

@@ -18,7 +18,7 @@ d_curl "http://papers.nips.cc/" "$script_dir/html/nips.html"
 
 year_url=$(cat "$script_dir/html/nips.html" | sed -n "s/.*href=\"\(.*\)\".*NIPS $1.*/\1/p")
 folder=$(cat "$script_dir/html/nips.html" | sed -n "s/.*\".\(.*NIPS $1.*\).\/a.*/\1/p")
-# delete -f "$script_dir/html/nips.html"
+delete f "$script_dir/html/nips.html"
 if [ -z "$year_url" ]; then
     echo -e "${red}Error: illegal input year!${nc}" && exit 1
 fi
