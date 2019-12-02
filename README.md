@@ -46,7 +46,7 @@ Download paper:
 ```
 关键词可以有多个：
 ```
-┌─[murongxixi@murongxixi-xps] - [~/.cache/i3lock/current] - [一 12月 02, 11:07]
+┌─[murongxixi@murongxixi-xps] - [~] - [一 12月 02, 11:07]
 └─[$] <> nips.sh 2018 condition gradient  
 3 Uncertainty Sampling is Preconditioned Stochastic Gradient Descent on Zero-One Loss
 2 Zeroth-order (Non)-Convex Stochastic Optimization via Conditional Gradient and Gradient Updates
