@@ -45,16 +45,21 @@ When you download some proceeding for the first time, it will take some time to 
 2 Dynamic Weights in Multi-Objective Deep Reinforcement Learning
 1 AReS and MaRS Adversarial and MMD-Minimizing Regression for SDEs
 ==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (773)
-==> 98
+==> 535 687
 
-1/1 (100.00%) Online learning with kernel losses
+1/2 (50.00%) Does Data Augmentation Lead to Positive Margin?
 Download paper: 
-Proceedings of ICML 20 100%[==========================>] 353.79K   265KB/s  用时 1.3s    
-2019-12-04 03:28:29 URL:http://proceedings.mlr.press/v97/chatterji19a/chatterji19a.pdf [362285/362285] -> "Proceedings of ICML 2019 /Online learning with kernel losses/chatterji19a.pdf" [1]
+Proceedings of ICML 20 100%[==========================>] 700.19K   310KB/s  用时 2.3s    
+2019-12-04 04:06:18 URL:http://proceedings.mlr.press/v97/rajput19a/rajput19a.pdf [716997/716997] -> "Proceedings of ICML 2019 /Does Data Augmentation Lead to Positive Margin?/rajput19a.pdf" [1]
 Download supplementary: 
-Proceedings of ICML 20 100%[==========================>] 600.31K   356KB/s  用时 1.7s    
-2019-12-04 03:28:31 URL:http://proceedings.mlr.press/v97/chatterji19a/chatterji19a-supp.pdf [614722/614722] -> "Proceedings of ICML 2019 /Online learning with kernel losses/chatterji19a-supp.pdf" [1]
-Merge: chatterji19a-merge.pdf
+Proceedings of ICML 20 100%[==========================>] 777.58K   460KB/s  用时 1.7s    
+2019-12-04 04:06:21 URL:http://proceedings.mlr.press/v97/rajput19a/rajput19a-supp.pdf [796238/796238] -> "Proceedings of ICML 2019 /Does Data Augmentation Lead to Positive Margin?/rajput19a-supp.pdf" [1]
+Merge: rajput19a-merge.pdf
+
+2/2 (100.00%) Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin
+Download paper: 
+Proceedings of ICML 20 100%[==========================>] 343.12K   223KB/s  用时 1.5s    
+2019-12-04 04:06:25 URL:http://proceedings.mlr.press/v97/wu19c/wu19c.pdf [351358/351358] -> "Proceedings of ICML 2019 /Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin/wu19c.pdf" [1]
 ```
 
 ```shell
@@ -70,35 +75,20 @@ Merge: chatterji19a-merge.pdf
 2 Regret Bounds for Robust Adaptive Control of the Linear Quadratic Regulator
 1 Acceleration through Optimistic No-Regret Dynamics
 ==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (9)
-==> 5-6
+==> 6
 
-1/2 (50.00%) Efficient online algorithms for fast-rate regret bounds under sparsity
+1/1 (100.00%) Constant Regret, Generalized Mixability, and Mirror Descent
 Download paper: 
-Advances in Neural Inf 100%[==========================>] 768.58K  8.02KB/s  用时 1m 40s  
-2019-12-04 03:31:06 URL:http://papers.nips.cc/paper/7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity.pdf [787029/787029] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Efficient online algorithms for fast-rate regret bounds under sparsity/7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity.pdf" [1]
-Download bib: 
-Advances in Neural Inf     [ <=>                       ]     533  --.-KB/s  用时 0s      
-2019-12-04 03:31:08 URL:http://papers.nips.cc/paper/7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity/bibtex [533] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Efficient online algorithms for fast-rate regret bounds under sparsity/7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity.bib" [1]
-Download supplemental: 
-Advances in Neural Inf 100%[==========================>] 455.67K  6.45KB/s  用时 60s     
-2019-12-04 03:32:08 URL:http://papers.nips.cc/paper/7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity-supplemental.zip [466611/466611] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Efficient online algorithms for fast-rate regret bounds under sparsity/7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity.zip" [1]
-Download review: 
-Advances in Neural Inf 100%[==========================>]  17.54K  41.9KB/s  用时 0.4s    
-2019-12-04 03:32:09 URL:http://media.nips.cc/nipsbooks/nipspapers/paper_files/nips31/reviews/3496.html [17961/17961] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Efficient online algorithms for fast-rate regret bounds under sparsity/review.html" [1]
-Unzip and merge: 7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity-merge.pdf
-
-2/2 (100.00%) Constant Regret, Generalized Mixability, and Mirror Descent
-Download paper: 
-Advances in Neural Inf 100%[==========================>] 351.82K  11.0KB/s  用时 45s     
-2019-12-04 03:32:57 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent.pdf [360264/360264] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Constant Regret, Generalized Mixability, and Mirror Descent/7971-constant-regret-generalized-mixability-and-mirror-descent.pdf" [1]
+Advances in Neural Inf 100%[==========================>] 351.82K  8.84KB/s  用时 35s     
+2019-12-04 03:59:50 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent.pdf [360264/360264] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/7971-constant-regret-generalized-mixability-and-mirror-descent/7971-constant-regret-generalized-mixability-and-mirror-descent.pdf" [1]
 Download bib: 
 Advances in Neural Inf     [ <=>                       ]     509  --.-KB/s  用时 0s      
-2019-12-04 03:32:59 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent/bibtex [509] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Constant Regret, Generalized Mixability, and Mirror Descent/7971-constant-regret-generalized-mixability-and-mirror-descent.bib" [1]
+2019-12-04 03:59:51 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent/bibtex [509] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/7971-constant-regret-generalized-mixability-and-mirror-descent/7971-constant-regret-generalized-mixability-and-mirror-descent.bib" [1]
 Download supplemental: 
-Advances in Neural Inf 100%[==========================>]   2.30M  4.28KB/s  用时 4m 28s  
-2019-12-04 03:37:28 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent-supplemental.zip [2415916/2415916] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Constant Regret, Generalized Mixability, and Mirror Descent/7971-constant-regret-generalized-mixability-and-mirror-descent.zip" [1]
+Advances in Neural Inf 100%[==========================>]   2.30M  9.38KB/s  用时 4m 20s  
+2019-12-04 04:04:12 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent-supplemental.zip [2415916/2415916] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/7971-constant-regret-generalized-mixability-and-mirror-descent/7971-constant-regret-generalized-mixability-and-mirror-descent.zip" [1]
 Download review: 
-Advances in Neural Inf 100%[==========================>]   7.99K  --.-KB/s  用时 0s      
-2019-12-04 03:37:29 URL:http://media.nips.cc/nipsbooks/nipspapers/paper_files/nips31/reviews/3695.html [8184/8184] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Constant Regret, Generalized Mixability, and Mirror Descent/review.html" [1]
+Advances in Neural Inf 100%[==========================>]   7.99K  4.79KB/s  用时 1.7s    
+2019-12-04 04:04:14 URL:http://media.nips.cc/nipsbooks/nipspapers/paper_files/nips31/reviews/3695.html [8184/8184] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/7971-constant-regret-generalized-mixability-and-mirror-descent/review.html" [1]
 Unzip and merge: 7971-constant-regret-generalized-mixability-and-mirror-descent-merge.pdf
 ```

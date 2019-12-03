@@ -227,7 +227,6 @@ if [ "$total" -gt 0 ]; then
     while [ "$i" -lt "$len" ]; do
         if [ "${select_array[$i]}" == 1 ]; then
             title=${title_array[$i]}
-            create d "$folder/$title"
 
             ((j++))
             awk 'BEGIN{printf "\033[35m\n%d/%d (%.2f%)\033[0m", '$j', '$total', (100 * '$j'/'$total')}'
@@ -235,6 +234,7 @@ if [ "$total" -gt 0 ]; then
 
             case $1 in
             'pmlr')
+                create d "$folder/$title"
                 pdf_url=$(echo ${url_array[$i]} | sed -n 's/.*href="\(.*[1-9][1-9][a-z].pdf\)" target.*/\1/p')
                 pdf_url_array=(${pdf_url//\// })
                 pdf_name=${pdf_url_array[-1]}
@@ -267,6 +267,10 @@ if [ "$total" -gt 0 ]; then
                 pdf_url=$(cat "$html_cache/paper.html" | sed -n 's/.*href="\(.*\)".*PDF.*/\1/p')
                 pdf_url_array=(${pdf_url//\// })
                 pdf_name=${pdf_url_array[-1]}
+
+                title=${pdf_name:0:-4}
+                create d "$folder/$title"
+
                 if [ -f "$folder/$title/$pdf_name" ]; then
                     echo -e "${yellow}Paper already exists!${nc}"
                 else
