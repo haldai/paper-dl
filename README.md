@@ -13,8 +13,8 @@ This repository provides the shell script for downloading ai conference proceedi
 ## Installation
 
 ```shell
-git clone https://github.com/murongxixi/download-paper.git
-cd download-paper
+git clone https://github.com/murongxixi/paper-dl.git
+cd paper-dl
 sudo ./install.sh
 ```
 
