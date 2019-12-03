@@ -45,27 +45,25 @@ When you download some proceeding for the first time, it will take some time to 
 2 Dynamic Weights in Multi-Objective Deep Reinforcement Learning
 1 AReS and MaRS Adversarial and MMD-Minimizing Regression for SDEs
 ==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (773)
-==> 67 97-98
+==> 97 98
 
-1/3 (33.33%) A Kernel Perspective for Regularizing Deep Neural Networks
+1/2 (50.00%) On Symmetric Losses for Learning from Corrupted Labels
 Download paper: 
-################################################################################### 100.0%
+Proceedings of ICML 20 100%[==========================>] 706.89K   323KB/s  用时 2.2s    
+2019-12-04 03:15:15 URL:http://proceedings.mlr.press/v97/charoenphakdee19a/charoenphakdee19a.pdf [723856/723856] -> "Proceedings of ICML 2019 /On Symmetric Losses for Learning from Corrupted Labels/charoenphakdee19a.pdf" [1]
 Download supplementary: 
-################################################################################### 100.0%
-Merge: bietti19a-merge.pdf
-
-2/3 (66.67%) On Symmetric Losses for Learning from Corrupted Labels
-Download paper: 
-################################################################################### 100.0%
-Download supplementary: 
-################################################################################### 100.0%
+Proceedings of ICML 20  34%[========>                  ] 174.83K  3.55KB/s  用时 66s      
+Proceedings of ICML 20 100%[+++++++++=================>] 504.05K   284KB/s  用时 1.2s     
+2019-12-04 03:16:24 URL:http://proceedings.mlr.press/v97/charoenphakdee19a/charoenphakdee19a-supp.pdf [516148/516148] -> "Proceedings of ICML 2019 /On Symmetric Losses for Learning from Corrupted Labels/charoenphakdee19a-supp.pdf" [2]
 Merge: charoenphakdee19a-merge.pdf
 
-3/3 (100.00%) Online learning with kernel losses
+2/2 (100.00%) Online learning with kernel losses
 Download paper: 
-################################################################################### 100.0%
+Proceedings of ICML 20 100%[==========================>] 353.79K   254KB/s  用时 1.4s    
+2019-12-04 03:16:28 URL:http://proceedings.mlr.press/v97/chatterji19a/chatterji19a.pdf [362285/362285] -> "Proceedings of ICML 2019 /Online learning with kernel losses/chatterji19a.pdf" [1]
 Download supplementary: 
-################################################################################### 100.0%
+Proceedings of ICML 2019 /Online learning wit 100%[===============================================================================================>] 600.31K   367KB/s  用时 1.6s    
+2019-12-04 03:16:30 URL:http://proceedings.mlr.press/v97/chatterji19a/chatterji19a-supp.pdf [614722/614722] -> "Proceedings of ICML 2019 /Online learning with kernel losses/chatterji19a-supp.pdf" [1]
 Merge: chatterji19a-merge.pdf
 ```
 
