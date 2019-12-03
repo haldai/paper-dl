@@ -5,7 +5,7 @@ Currently supported websites are
 
 ## Dependencies
 
-- curl: download tool
+- wget: download tool
 - unzip: extract supplementary
 - perl: non-greedy matching for regular expression
 - ghostscript: merge pdf files
@@ -45,25 +45,15 @@ When you download some proceeding for the first time, it will take some time to 
 2 Dynamic Weights in Multi-Objective Deep Reinforcement Learning
 1 AReS and MaRS Adversarial and MMD-Minimizing Regression for SDEs
 ==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (773)
-==> 97 98
+==> 98
 
-1/2 (50.00%) On Symmetric Losses for Learning from Corrupted Labels
+1/1 (100.00%) Online learning with kernel losses
 Download paper: 
-Proceedings of ICML 20 100%[==========================>] 706.89K   323KB/s  用时 2.2s    
-2019-12-04 03:15:15 URL:http://proceedings.mlr.press/v97/charoenphakdee19a/charoenphakdee19a.pdf [723856/723856] -> "Proceedings of ICML 2019 /On Symmetric Losses for Learning from Corrupted Labels/charoenphakdee19a.pdf" [1]
+Proceedings of ICML 20 100%[==========================>] 353.79K   265KB/s  用时 1.3s    
+2019-12-04 03:28:29 URL:http://proceedings.mlr.press/v97/chatterji19a/chatterji19a.pdf [362285/362285] -> "Proceedings of ICML 2019 /Online learning with kernel losses/chatterji19a.pdf" [1]
 Download supplementary: 
-Proceedings of ICML 20  34%[========>                  ] 174.83K  3.55KB/s  用时 66s      
-Proceedings of ICML 20 100%[+++++++++=================>] 504.05K   284KB/s  用时 1.2s     
-2019-12-04 03:16:24 URL:http://proceedings.mlr.press/v97/charoenphakdee19a/charoenphakdee19a-supp.pdf [516148/516148] -> "Proceedings of ICML 2019 /On Symmetric Losses for Learning from Corrupted Labels/charoenphakdee19a-supp.pdf" [2]
-Merge: charoenphakdee19a-merge.pdf
-
-2/2 (100.00%) Online learning with kernel losses
-Download paper: 
-Proceedings of ICML 20 100%[==========================>] 353.79K   254KB/s  用时 1.4s    
-2019-12-04 03:16:28 URL:http://proceedings.mlr.press/v97/chatterji19a/chatterji19a.pdf [362285/362285] -> "Proceedings of ICML 2019 /Online learning with kernel losses/chatterji19a.pdf" [1]
-Download supplementary: 
-Proceedings of ICML 2019 /Online learning wit 100%[===============================================================================================>] 600.31K   367KB/s  用时 1.6s    
-2019-12-04 03:16:30 URL:http://proceedings.mlr.press/v97/chatterji19a/chatterji19a-supp.pdf [614722/614722] -> "Proceedings of ICML 2019 /Online learning with kernel losses/chatterji19a-supp.pdf" [1]
+Proceedings of ICML 20 100%[==========================>] 600.31K   356KB/s  用时 1.7s    
+2019-12-04 03:28:31 URL:http://proceedings.mlr.press/v97/chatterji19a/chatterji19a-supp.pdf [614722/614722] -> "Proceedings of ICML 2019 /Online learning with kernel losses/chatterji19a-supp.pdf" [1]
 Merge: chatterji19a-merge.pdf
 ```
 
@@ -83,24 +73,32 @@ Merge: chatterji19a-merge.pdf
 ==> 5-6
 
 1/2 (50.00%) Efficient online algorithms for fast-rate regret bounds under sparsity
-Download paper:
-################################################################################### 100.0%
-Download bib:
-################################################################################### 100.0%
-Download supplemental:
-################################################################################### 100.0%
-Download review:
-################################################################################### 100.0%
+Download paper: 
+Advances in Neural Inf 100%[==========================>] 768.58K  8.02KB/s  用时 1m 40s  
+2019-12-04 03:31:06 URL:http://papers.nips.cc/paper/7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity.pdf [787029/787029] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Efficient online algorithms for fast-rate regret bounds under sparsity/7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity.pdf" [1]
+Download bib: 
+Advances in Neural Inf     [ <=>                       ]     533  --.-KB/s  用时 0s      
+2019-12-04 03:31:08 URL:http://papers.nips.cc/paper/7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity/bibtex [533] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Efficient online algorithms for fast-rate regret bounds under sparsity/7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity.bib" [1]
+Download supplemental: 
+Advances in Neural Inf 100%[==========================>] 455.67K  6.45KB/s  用时 60s     
+2019-12-04 03:32:08 URL:http://papers.nips.cc/paper/7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity-supplemental.zip [466611/466611] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Efficient online algorithms for fast-rate regret bounds under sparsity/7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity.zip" [1]
+Download review: 
+Advances in Neural Inf 100%[==========================>]  17.54K  41.9KB/s  用时 0.4s    
+2019-12-04 03:32:09 URL:http://media.nips.cc/nipsbooks/nipspapers/paper_files/nips31/reviews/3496.html [17961/17961] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Efficient online algorithms for fast-rate regret bounds under sparsity/review.html" [1]
 Unzip and merge: 7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity-merge.pdf
 
 2/2 (100.00%) Constant Regret, Generalized Mixability, and Mirror Descent
-Download paper:
-################################################################################### 100.0%
-Download bib:
-################################################################################### 100.0%
-Download supplemental:
-################################################################################### 100.0%
-Download review:
-################################################################################### 100.0%
+Download paper: 
+Advances in Neural Inf 100%[==========================>] 351.82K  11.0KB/s  用时 45s     
+2019-12-04 03:32:57 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent.pdf [360264/360264] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Constant Regret, Generalized Mixability, and Mirror Descent/7971-constant-regret-generalized-mixability-and-mirror-descent.pdf" [1]
+Download bib: 
+Advances in Neural Inf     [ <=>                       ]     509  --.-KB/s  用时 0s      
+2019-12-04 03:32:59 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent/bibtex [509] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Constant Regret, Generalized Mixability, and Mirror Descent/7971-constant-regret-generalized-mixability-and-mirror-descent.bib" [1]
+Download supplemental: 
+Advances in Neural Inf 100%[==========================>]   2.30M  4.28KB/s  用时 4m 28s  
+2019-12-04 03:37:28 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent-supplemental.zip [2415916/2415916] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Constant Regret, Generalized Mixability, and Mirror Descent/7971-constant-regret-generalized-mixability-and-mirror-descent.zip" [1]
+Download review: 
+Advances in Neural Inf 100%[==========================>]   7.99K  --.-KB/s  用时 0s      
+2019-12-04 03:37:29 URL:http://media.nips.cc/nipsbooks/nipspapers/paper_files/nips31/reviews/3695.html [8184/8184] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/Constant Regret, Generalized Mixability, and Mirror Descent/review.html" [1]
 Unzip and merge: 7971-constant-regret-generalized-mixability-and-mirror-descent-merge.pdf
 ```
