@@ -48,36 +48,24 @@ When you download some proceeding for the first time, it will take some time to 
 ==> 67 97-98
 
 1/3 (33.33%) A Kernel Perspective for Regularizing Deep Neural Networks
-Download paper:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  347k  100  347k    0     0  24443      0  0:00:14  0:00:14 --:--:-- 12320
-Download supplementary:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  683k  100  683k    0     0  32212      0  0:00:21  0:00:21 --:--:-- 30509
+Download paper: 
+################################################################################### 100.0%
+Download supplementary: 
+################################################################################### 100.0%
 Merge: bietti19a-merge.pdf
 
 2/3 (66.67%) On Symmetric Losses for Learning from Corrupted Labels
-Download paper:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  706k  100  706k    0     0  67821      0  0:00:10  0:00:10 --:--:-- 44780
-Download supplementary:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  504k  100  504k    0     0  22630      0  0:00:22  0:00:22 --:--:-- 19225
+Download paper: 
+################################################################################### 100.0%
+Download supplementary: 
+################################################################################### 100.0%
 Merge: charoenphakdee19a-merge.pdf
 
 3/3 (100.00%) Online learning with kernel losses
-Download paper:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  353k  100  353k    0     0   134k      0  0:00:02  0:00:02 --:--:--  134k
-Download supplementary:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  600k  100  600k    0     0   301k      0  0:00:01  0:00:01 --:--:--  301k
+Download paper: 
+################################################################################### 100.0%
+Download supplementary: 
+################################################################################### 100.0%
 Merge: chatterji19a-merge.pdf
 ```
 
@@ -98,39 +86,23 @@ Merge: chatterji19a-merge.pdf
 
 1/2 (50.00%) Efficient online algorithms for fast-rate regret bounds under sparsity
 Download paper:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  768k  100  768k    0     0   310k      0  0:00:02  0:00:02 --:--:--  310k
+################################################################################### 100.0%
 Download bib:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   533    0   533    0     0    851      0 --:--:-- --:--:-- --:--:--   850
+################################################################################### 100.0%
 Download supplemental:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  455k  100  455k    0     0   193k      0  0:00:02  0:00:02 --:--:--  193k
+################################################################################### 100.0%
 Download review:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 17961  100 17961    0     0  22423      0 --:--:-- --:--:-- --:--:-- 22395
+################################################################################### 100.0%
 Unzip and merge: 7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity-merge.pdf
 
 2/2 (100.00%) Constant Regret, Generalized Mixability, and Mirror Descent
 Download paper:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  351k  100  351k    0     0   227k      0  0:00:01  0:00:01 --:--:--  227k
+################################################################################### 100.0%
 Download bib:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   509    0   509    0     0    889      0 --:--:-- --:--:-- --:--:--   889
+################################################################################### 100.0%
 Download supplemental:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 2359k  100 2359k    0     0   443k      0  0:00:05  0:00:05 --:--:--  538k
+################################################################################### 100.0%
 Download review:
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  8184  100  8184    0     0  17229      0 --:--:-- --:--:-- --:--:-- 17229
+################################################################################### 100.0%
 Unzip and merge: 7971-constant-regret-generalized-mixability-and-mirror-descent-merge.pdf
 ```
