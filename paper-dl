@@ -1,0 +1,336 @@
+#!/usr/bin/env bash
+
+black="\033[30m"
+red="\033[31m"
+green="\033[32m"
+yellow="\033[33m"
+blue="\033[34m"
+purple="\033[35m"
+skyblue="\033[36m"
+nc="\033[0m"
+
+# create d "html" || create f "select.txt"
+function create() {
+    case "$1" in
+    "d")
+        if [ ! -d "$2" ]; then
+            mkdir "$2"
+        fi
+        ;;
+    "f")
+        if [ -f "$2" ]; then
+            rm "$2"
+        else
+            touch "$2"
+        fi
+        ;;
+    esac
+}
+
+# delete d "html" || delete f "select.txt"
+function delete() {
+    case "$1" in
+    "d")
+        if [ -d "$2" ]; then
+            rm -r "$2"
+        fi
+        ;;
+    "f")
+        if [ -f "$2" ]; then
+            rm "$2"
+        fi
+        ;;
+    esac
+}
+
+# d_curl "http://proceedings.mlr.press/" "html/jmlr root.html" [s]
+function d_curl() {
+    while [ ! -f "$2" ]; do
+        if [ $(curl -o /dev/null -sIL -w %{http_code} "$1") == 200 ]; then
+            if [ "$3" == "s" ]; then
+                curl -s "$1" -o "$2"
+            else
+                curl "$1" -o "$2"
+            fi
+            return 1
+        else
+            echo -e "${red}Can't download $1!${nc}"
+            return 0
+        fi
+    done
+}
+
+if [ $# -lt 2 ]; then # 如果参数少于两个
+    echo -e "${red}Error: two parameters at least!${nc}" && exit 1
+fi
+
+create d '.html' # 创建存放html的目录
+
+case $1 in
+'pmlr')
+    host='http://proceedings.mlr.press/'
+    d_curl $host '.html/host.html' s
+    folder=$(cat '.html/host.html' | sed -n "s/.*$2.*\/a. \(.*\)/\1/p")
+    proceeding_url=$(cat '.html/host.html' | sed -n "s/.*href=\"\(.*\)\".*$2.*/\1/p")
+
+    if [ -z "$folder" ]; then
+        echo -e "${red}Error: illegal 2nd parameter!${nc}" && exit 1
+    fi
+
+    d_curl "$host$proceeding_url" ".html/$1-$2.html" ns
+
+    i=0 && j=0 && url_line=0 # 读取文章列表
+    while read -r line; do
+        if [[ "$line" =~ '"title"' ]]; then
+            if [ $# == 2 ]; then # 如果没有参数 直接保存进数组
+                title_array[$i]=$(echo $line | sed -n 's/.*title".\(.*\).\/p.*/\1/p') && ((i++))
+            else # 如果还有关键词
+                keywords_find=1
+                for arg in $@; do
+                    arg=${arg,,}
+                    if [ "$arg" != "$1" ] && [ "$arg" != "$2" ] && [[ ! "$line" =~ "$arg" ]] && [[ ! "$line" =~ "${arg^}" ]] && [[ ! "$line" =~ "${arg,}" ]] && [[ ! "$line" =~ "${arg^^}" ]]; then # 如果有一个关键词没找到
+                        keywords_find=0
+                    fi
+                done
+                if [ "$keywords_find" == 1 ]; then # 如果包含了全部关键词
+                    title_array[$i]=$(echo $line | sed -n 's/.*title".\(.*\).\/p.*/\1/p') && url_line=1 && ((i++))
+                fi
+            fi
+        fi
+        if [[ "$line" =~ 'Download PDF' ]]; then
+            if [ $# == 2 ]; then # 如果没有参数 直接保存进数组
+                url_array[$j]="$line" && ((j++))
+            else # 如果还有关键词
+                if [ "$url_line" == 1 ]; then
+                    url_array[$j]="$line" && url_line=0 && ((j++))
+                fi
+            fi
+        fi
+    done <".html/$1-$2.html"
+    ;;
+'nips')
+    host='http://papers.nips.cc'
+    d_curl $host '.html/host.html' s
+    folder=$(cat '.html/host.html' | sed -n "s/.*\".\(.*NIPS $2.*\).\/a.*/\1/p")
+    proceeding_url=$(cat '.html/host.html' | sed -n "s/.*href=\"\(.*\)\".*NIPS $2.*/\1/p")
+
+    if [ -z "$folder" ]; then
+        echo -e "${red}Error: illegal 2nd parameter!${nc}" && exit 1
+    fi
+
+    d_curl "$host$proceeding_url" ".html/$1-$2.html" ns
+
+    i=0 # 读取文章列表
+    while read -r line; do
+        if [[ "$line" =~ '<li><a href="/paper/' ]]; then
+            if [ ${#@} == 2 ]; then # 如果只有卷号 直接保存进数组
+                url_array[$i]=$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*href="\(.*\)".*/\1/p')
+                title_array[$i]=$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*">\(.*\)/\1/p')
+                ((i++))
+            else # 如果还有关键词
+                keywords_find=1
+                for arg in $@; do
+                    arg=${arg,,}
+                    if [ "$arg" != "$1" ] && [ "$arg" != "$2" ] && [[ ! "$line" =~ "$arg" ]] && [[ ! "$line" =~ "${arg^}" ]] && [[ ! "$line" =~ "${arg,}" ]] && [[ ! "$line" =~ "${arg^^}" ]]; then # 如果有一个关键词没找到
+                        keywords_find=0
+                    fi
+                done
+                if [ "$keywords_find" == 1 ]; then # 如果包含了全部关键词
+                    url_array[$i]=$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*href="\(.*\)".*/\1/p')
+                    title_array[$i]="$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*">\(.*\)/\1/p')"
+                    ((i++))
+                fi
+            fi
+        fi
+    done <".html/$1-$2.html"
+    ;;
+esac
+
+delete f '.html/host.html'
+
+len=$i # 总查询结果数目
+
+if [ "$i" -gt 0 ]; then
+    while [ "$i" -gt 0 ]; do # 倒序输出查询结果
+        echo -e "${purple}$i${nc} \c"
+        echo "${title_array[$(($i - 1))]}"
+        ((i--)) && select_array[$i]=0
+    done
+    echo -e "${yellow}==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all ($len)${nc}"
+    read -p $'\033[33m==> \033[0m' input
+else
+    echo -e "${red}Warning: no papers meet the query conditions!${nc}" && exit 1
+fi
+
+# 处理输入
+if [ -z "${input// /}" ]; then
+    for i in "${!select_array[@]}"; do
+        select_array[i]=1
+    done
+else
+    input=($input)
+    for value in ${input[@]}; do
+        if [ "$(echo "$value" | awk '{print($0~/^[1-9][0-9]*-[1-9][0-9]*$/)}')" == 1 ]; then
+            i=$(echo "$value" | cut -d '-' -f 1) && j=$(echo "$value" | cut -d '-' -f 2)
+            while [ "$i" -le "$j" ] && [ "$i" -le "$len" ]; do
+                select_array[$(($i - 1))]=1 && ((i++))
+            done
+        elif [ "$(echo "$value" | awk '{print($0~/^[1-9][0-9]*$/)}')" == 1 ]; then
+            if [ "$value" -le "$len" ]; then
+                select_array[$(($value - 1))]=1
+            fi
+        fi
+    done
+
+    for value in ${input[@]}; do
+        if [ "$(echo "$value" | awk '{print($0~/^[\^][0-9]*-[1-9][0-9]*$/)}')" == 1 ]; then
+            value=${value:1}
+            i=$(echo "$value" | cut -d '-' -f 1) && j=$(echo "$value" | cut -d '-' -f 2)
+            k=0
+            while [ "$k" -lt "$len" ]; do
+                if [ "$k" -lt "$i" ] || [ "$k" -ge "$j" ]; then
+                    select_array[$k]=1
+                fi
+                ((k++))
+            done
+        elif [ "$(echo "$value" | awk '{print($0~/^[\^][1-9][0-9]*$/)}')" == 1 ]; then
+            value=${value:1}
+            k=0
+            while [ "$k" -lt "$len" ]; do
+                if [ "$k" != "$(($value - 1))" ]; then
+                    select_array[$k]=1
+                fi
+                ((k++))
+            done
+        fi
+    done
+
+    for value in ${input[@]}; do
+        if [ "$(echo "$value" | awk '{print($0~/^[\^][0-9]*-[1-9][0-9]*$/)}')" == 1 ]; then
+            value=${value:1}
+            i=$(echo "$value" | cut -d '-' -f 1)
+            j=$(echo "$value" | cut -d '-' -f 2)
+            while [ "$i" -le "$j" ] && [ "$i" -le "$len" ]; do
+                select_array[$(($i - 1))]=0 && ((i++))
+            done
+        elif [ "$(echo "$value" | awk '{print($0~/^[\^][1-9][0-9]*$/)}')" == 1 ]; then
+            value=${value:1}
+            if [ "$value" -le "$len" ]; then
+                select_array[$(($value - 1))]=0
+            fi
+        fi
+    done
+fi
+
+# 检查是否有下载任务
+total=0
+for value in ${select_array[@]}; do
+    if [ "$value" == 1 ]; then
+        ((total++))
+    fi
+done
+
+if [ "$total" -gt 0 ]; then
+    create d "$folder"
+
+    i=0 && j=0
+    while [ "$i" -lt "$len" ]; do
+        if [ "${select_array[$i]}" == 1 ]; then
+            title=${title_array[$i]}
+            create d "$folder/$title"
+
+            ((j++))
+            awk 'BEGIN{printf "\033[35m\n%d/%d (%.2f%)\033[0m", '$j', '$total', (100 * '$j'/'$total')}'
+            echo -e " $title"
+
+            case $1 in
+            'pmlr')
+                pdf_url=$(echo ${url_array[$i]} | sed -n 's/.*href="\(.*[1-9][1-9][a-z].pdf\)" target.*/\1/p')
+                pdf_url_array=(${pdf_url//\// })
+                pdf_name=${pdf_url_array[-1]}
+                if [ -f "$folder/$title/$pdf_name" ]; then
+                    echo -e "${yellow}Paper already exists!${nc}"
+                else
+                    echo -e "${yellow}Download paper: ${nc}"
+                    d_curl "$pdf_url" "$folder/$title/$pdf_name" ns
+                fi
+
+                if [[ "${url_array[$i]}" =~ 'Supplementary PDF' ]]; then
+                    supp_url=$(echo "${url_array[$i]}" | sed -n 's/.*Download PDF.*href="\(.*-supp.pdf\)" target.*/\1/p')
+                    supp_url_array=(${supp_url//\// })
+                    supp_name=${supp_url_array[-1]}
+                    if [ -f "$folder/$title/$supp_name" ]; then
+                        echo -e "${yellow}Supplementary already exists!${nc}"
+                    else
+                        echo -e "${yellow}Download supplementary: ${nc}"
+                        d_curl "$supp_url" "$folder/$title/$supp_name" ns
+                    fi
+
+                    # 合并
+                    echo -e "${yellow}Merge:${nc} ${pdf_name:0:-4}-merge.pdf"
+                    gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile="$folder/$title/${pdf_name:0:-4}-merge.pdf" "$folder/$title/$pdf_name" "$folder/$title/$supp_name"
+                fi
+                ;;
+            'nips')
+                d_curl "$host${url_array[$i]}" '.html/paper.html' s
+
+                pdf_url=$(cat '.html/paper.html' | sed -n 's/.*href="\(.*\)".*PDF.*/\1/p')
+                pdf_url_array=(${pdf_url//\// })
+                pdf_name=${pdf_url_array[-1]}
+                if [ -f "$folder/$title/$pdf_name" ]; then
+                    echo -e "${yellow}Paper already exists!${nc}"
+                else
+                    echo -e "${yellow}Download paper: ${nc}"
+                    d_curl "$host$pdf_url" "$folder/$title/$pdf_name" ns
+                fi
+
+                bib_url=$(cat '.html/paper.html' | sed -n 's/.*href="\(.*\)".*BibTeX.*/\1/p')
+                if [ -f "$folder/$title/${pdf_name:0:-4}.bib" ]; then
+                    echo -e "${yellow}Bib already exists!${nc}"
+                else
+                    echo -e "${yellow}Download bib: ${nc}"
+                    d_curl "$host$bib_url" "$folder/$title/${pdf_name:0:-4}.bib" ns
+                fi
+
+                supplemental_url=$(cat '.html/paper.html' | sed -n 's/.*href="\(.*\)".*Supplemental.*/\1/p')
+                if [ -f "$folder/$title/${pdf_name:0:-4}.zip" ]; then
+                    echo -e "${yellow}Supplemental already exists!${nc}"
+                else
+                    echo -e "${yellow}Download supplemental: ${nc}"
+                    d_curl "$host$supplemental_url" "$folder/$title/${pdf_name:0:-4}.zip" ns
+                fi
+
+                review_url=$(cat '.html/paper.html' | sed -n 's/.*href="\/\/\(.*\)".*Reviews.*/\1/p')
+                if [ -f "$folder/$title/review.html" ]; then
+                    echo -e "${yellow}Review already exists!${nc}"
+                else
+                    echo -e "${yellow}Download review: ${nc}"
+                    d_curl "$review_url" "$folder/$title/review.html" ns
+                fi
+
+                if [ -f "$folder/$title/${pdf_name:0:-4}.zip" ]; then
+                    if [ -f "$folder/$title/$folder/$title/${pdf_name:0:-4}-merge.pdf" ]; then
+                        echo -e "${yellow}Merge file already exists!${nc}"
+                    else
+                        echo -e "${yellow}Unzip and merge:${nc} ${pdf_name:0:-4}-merge.pdf"
+                        create d "$folder/$title/supp/"
+                        unzip -q "$folder/$title/${pdf_name:0:-4}.zip" -d "$folder/$title/supp/"
+                        merge_command="gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile='$folder/$title/${pdf_name:0:-4}-merge.pdf' '$folder/$title/$pdf_name'"
+                        for line in $(find "$folder/$title/supp/" -maxdepth 1 -regextype posix-extended -iregex '.*\.(pdf|PDF)' | tr ' ' '\?'); do
+                            merge_command="$merge_command '$line'"
+                        done
+                        merge_command=$(echo "$merge_command" | tr '\?' ' ')
+                        eval "$merge_command"
+                        delete d "$folder/$title/supp/"
+                    fi
+                fi
+
+                delete f '.html/paper.html'
+                ;;
+            esac
+        fi
+        ((i++))
+    done
+else
+    echo -e "${red}Warning: there is no papers to download!${nc}"
+fi
