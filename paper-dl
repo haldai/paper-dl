@@ -48,9 +48,9 @@ function d_curl() {
     while [ ! -f "$2" ]; do
         if [ $(curl -o /dev/null -sIL -w %{http_code} "$1") == 200 ]; then
             if [ "$3" == "s" ]; then
-                curl -s "$1" -o "$2"
+                curl -s -# "$1" -o "$2"
             else
-                curl "$1" -o "$2"
+                curl -# "$1" -o "$2"
             fi
             return 1
         else
