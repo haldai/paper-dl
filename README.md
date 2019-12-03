@@ -1,4 +1,4 @@
-This repository provides the shell script for downloading ai conference proceedings. Currently supported websites are
+Currently supported websites are
 
 - PMLR：[http://proceedings.mlr.press/](http://proceedings.mlr.press/)
 - NIPS：[https://papers.nips.cc/](https://papers.nips.cc/)
