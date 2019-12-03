@@ -48,18 +48,35 @@ When you download some proceeding for the first time, it will take some time to 
 ==> 535 687
 
 1/2 (50.00%) Does Data Augmentation Lead to Positive Margin?
-Download paper: 
-Proceedings of ICML 20 100%[==========================>] 700.19K   310KB/s  用时 2.3s    
+Download paper:
+Proceedings of ICML 20 100%[==========================>] 700.19K   310KB/s  用时 2.3s
 2019-12-04 04:06:18 URL:http://proceedings.mlr.press/v97/rajput19a/rajput19a.pdf [716997/716997] -> "Proceedings of ICML 2019 /Does Data Augmentation Lead to Positive Margin?/rajput19a.pdf" [1]
-Download supplementary: 
-Proceedings of ICML 20 100%[==========================>] 777.58K   460KB/s  用时 1.7s    
+Download supplementary:
+Proceedings of ICML 20 100%[==========================>] 777.58K   460KB/s  用时 1.7s
 2019-12-04 04:06:21 URL:http://proceedings.mlr.press/v97/rajput19a/rajput19a-supp.pdf [796238/796238] -> "Proceedings of ICML 2019 /Does Data Augmentation Lead to Positive Margin?/rajput19a-supp.pdf" [1]
 Merge: rajput19a-merge.pdf
 
 2/2 (100.00%) Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin
-Download paper: 
-Proceedings of ICML 20 100%[==========================>] 343.12K   223KB/s  用时 1.5s    
+Download paper:
+Proceedings of ICML 20 100%[==========================>] 343.12K   223KB/s  用时 1.5s
 2019-12-04 04:06:25 URL:http://proceedings.mlr.press/v97/wu19c/wu19c.pdf [351358/351358] -> "Proceedings of ICML 2019 /Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin/wu19c.pdf" [1]
+```
+
+```shell
+┌─[murongxixi@murongxixi-xps] - [~/ML/Conference] - [三 12月 04, 04:32]
+└─[$] <> paper-dl pmlr 97 margin
+5 Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin (Downloaded)
+4 Does Data Augmentation Lead to Positive Margin? (Downloaded)
+3 Lexicographic and Depth-Sensitive Margins in Homogeneous and Non-Homogeneous Deep Models
+2 Optimal Minimal Margin Maximization with Boosting
+1 Fast and Flexible Inference of Joint Distributions from their Marginals
+==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (5)
+==> 2
+
+1/1 (100.00%) Optimal Minimal Margin Maximization with Boosting
+Download paper:
+Proceedings of ICML 20 100%[==========================>]   1.38M   448KB/s  用时 3.2s
+2019-12-04 04:32:57 URL:http://proceedings.mlr.press/v97/mathiasen19a/mathiasen19a.pdf [1446479/1446479] -> "Proceedings of ICML 2019 /Optimal Minimal Margin Maximization with Boosting/mathiasen19a.pdf" [1]
 ```
 
 ```shell
@@ -78,17 +95,17 @@ Proceedings of ICML 20 100%[==========================>] 343.12K   223KB/s  用�
 ==> 6
 
 1/1 (100.00%) Constant Regret, Generalized Mixability, and Mirror Descent
-Download paper: 
-Advances in Neural Inf 100%[==========================>] 351.82K  8.84KB/s  用时 35s     
+Download paper:
+Advances in Neural Inf 100%[==========================>] 351.82K  8.84KB/s  用时 35s
 2019-12-04 03:59:50 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent.pdf [360264/360264] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/7971-constant-regret-generalized-mixability-and-mirror-descent/7971-constant-regret-generalized-mixability-and-mirror-descent.pdf" [1]
-Download bib: 
-Advances in Neural Inf     [ <=>                       ]     509  --.-KB/s  用时 0s      
+Download bib:
+Advances in Neural Inf     [ <=>                       ]     509  --.-KB/s  用时 0s
 2019-12-04 03:59:51 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent/bibtex [509] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/7971-constant-regret-generalized-mixability-and-mirror-descent/7971-constant-regret-generalized-mixability-and-mirror-descent.bib" [1]
-Download supplemental: 
-Advances in Neural Inf 100%[==========================>]   2.30M  9.38KB/s  用时 4m 20s  
+Download supplemental:
+Advances in Neural Inf 100%[==========================>]   2.30M  9.38KB/s  用时 4m 20s
 2019-12-04 04:04:12 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent-supplemental.zip [2415916/2415916] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/7971-constant-regret-generalized-mixability-and-mirror-descent/7971-constant-regret-generalized-mixability-and-mirror-descent.zip" [1]
-Download review: 
-Advances in Neural Inf 100%[==========================>]   7.99K  4.79KB/s  用时 1.7s    
+Download review:
+Advances in Neural Inf 100%[==========================>]   7.99K  4.79KB/s  用时 1.7s
 2019-12-04 04:04:14 URL:http://media.nips.cc/nipsbooks/nipspapers/paper_files/nips31/reviews/3695.html [8184/8184] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/7971-constant-regret-generalized-mixability-and-mirror-descent/review.html" [1]
 Unzip and merge: 7971-constant-regret-generalized-mixability-and-mirror-descent-merge.pdf
 ```
