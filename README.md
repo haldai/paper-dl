@@ -26,7 +26,7 @@ paper-dl pmlr/nips volume/year [keyword1 keyword2 ...]
 
 The first two args are necessary, keywords list is optional.
 
-When you download some proceeding for the first time, it will take some time to cache the .html file. Please be patient.
+When you download some proceeding for the first time, it will take some time to cache the .html file.
 
 ## Examples
 
