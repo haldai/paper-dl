@@ -142,10 +142,31 @@ done <"$html_cache/$1-$2.html"
 
 len=$i
 
+if [ -d "$folder" ]; then
+    exist_files=$(ls "$folder")
+fi
+
 if [ "$i" -gt 0 ]; then
     while [ "$i" -gt 0 ]; do
         echo -e "${purple}$i${nc} \c"
-        echo "${title_array[$(($i - 1))]}"
+        case $1 in
+        'pmlr')
+            title=${title_array[$(($i - 1))]}
+            ;;
+        'nips')
+            title=${url_array[$(($i - 1))]}
+            title=(${title//\// })
+            title=${title[-1]}
+            title=${title:0:-4}
+            ;;
+        esac
+        if [[ "$exist_files" =~ "$title" ]]; then
+            printf "%s" "${title_array[$(($i - 1))]}"
+            echo -e "${yellow} (Downloaded)${nc}"
+        else
+            echo "${title_array[$(($i - 1))]}"
+        fi
+
         ((i--)) && select_array[$i]=0
     done
     echo -e "${yellow}==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all ($len)${nc}"
