@@ -1,4 +1,4 @@
-This repository provides the shell script for ai paper download. Currently supported websites are
+This repository provides the shell script for downloading ai conference proceedings. Currently supported websites are
 
 - PMLR：[http://proceedings.mlr.press/](http://proceedings.mlr.press/)
 - NIPS：[https://papers.nips.cc/](https://papers.nips.cc/)
@@ -79,7 +79,7 @@ Download supplementary:
 Merge: chatterji19a-merge.pdf
 ```
 
-```
+```shell
 ┌─[murongxixi@murongxixi-xps] - [~/ML/Conference] - [二 12月 03, 17:39]
 └─[$] <> paper-dl nips 2018 regret
 9 Regret Bounds for Online Portfolio Selection with a Cardinality Constraint
