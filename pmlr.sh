@@ -57,8 +57,10 @@ while read -r line; do
 done <"$script_dir/html/pmlr-$volume.html"
 
 if [ "$i" -gt 0 ]; then
-    while [ "$i" -gt 0 ]; do
-        echo -e "${purple}$i${nc} ${title_array[$(($i - 1))]}" && ((i--)) && select_array[$i]=0 # 倒序输出查询结果
+    while [ "$i" -gt 0 ]; do # 倒序输出查询结果
+        echo -e "${purple}$i${nc} \c"
+        echo "${title_array[$(($i - 1))]}"
+        ((i--)) && select_array[$i]=0
     done
     echo -e "${yellow}==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all ($j)${nc}"
     read -p $'\033[33m==> \033[0m' input
@@ -171,7 +173,8 @@ if [ "$total" -gt 0 ]; then
                 fi
 
                 # 合并
-                pdftk "$script_dir/$folder/$title/$pdf_name" "$script_dir/$folder/$title/$supp_name" cat output "$script_dir/$folder/$title/${pdf_name:0:-4}-merge.pdf"
+                echo -e "${yellow}Merge:${nc} ${pdf_name:0:-4}-merge.pdf"
+                gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile="$script_dir/$folder/$title/${pdf_name:0:-4}-merge.pdf" "$script_dir/$folder/$title/$pdf_name" "$script_dir/$folder/$title/$supp_name"
             fi
         fi
         ((i++))

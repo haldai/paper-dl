@@ -18,7 +18,7 @@ d_curl "http://papers.nips.cc/" "$script_dir/html/nips.html" ns
 
 year_url=$(cat "$script_dir/html/nips.html" | sed -n "s/.*href=\"\(.*\)\".*NIPS $1.*/\1/p")
 folder=$(cat "$script_dir/html/nips.html" | sed -n "s/.*\".\(.*NIPS $1.*\).\/a.*/\1/p")
-delete f "$script_dir/html/nips.html"
+# delete f "$script_dir/html/nips.html"
 if [ -z "$year_url" ]; then
     echo -e "${red}Error: illegal input year!${nc}" && exit 1
 fi
@@ -31,8 +31,8 @@ i=0 && j=0
 while read -r line; do
     if [[ "$line" =~ "<li><a href=\"/paper/" ]]; then
         if [ ${#@} == 1 ]; then # 如果只有卷号 直接保存进数组
-            url_array[$i]=$(echo $line | cut -d '>' -f 2 | sed -n "s/.*href=\"\(.*\)\".*/\1/p")
-            title_array[$i]=$(echo $line | cut -d '>' -f 3 | sed -n "s/\(.*\).\/a.*/\1/p")
+            url_array[$i]=$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*href="\(.*\)".*/\1/p')
+            title_array[$i]=$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*">\(.*\)/\1/p')
             ((i++))
         else # 如果还有关键词
             keywords_find=1
@@ -43,8 +43,8 @@ while read -r line; do
                 fi
             done
             if [ "$keywords_find" == 1 ]; then # 如果包含了全部关键词
-                url_array[$i]=$(echo $line | cut -d '>' -f 2 | sed -n "s/.*href=\"\(.*\)\".*/\1/p")
-                title_array[$i]=$(echo $line | cut -d '>' -f 3 | sed -n "s/\(.*\).\/a.*/\1/p")
+                url_array[$i]=$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*href="\(.*\)".*/\1/p')
+                title_array[$i]="$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*">\(.*\)/\1/p')"
                 ((i++))
             fi
         fi
@@ -54,8 +54,10 @@ done <"$script_dir/html/nips-$1.html"
 len=$i # 总查询结果数目
 
 if [ "$i" -gt 0 ]; then
-    while [ "$i" -gt 0 ]; do
-        echo -e "${purple}$i${nc} ${title_array[$(($i - 1))]}" && ((i--)) && select_array[$i]=0 # 倒序输出查询结果
+    while [ "$i" -gt 0 ]; do # 倒序输出查询结果
+        echo -e "${purple}$i${nc} \c"
+        echo "${title_array[$(($i - 1))]}"
+        ((i--)) && select_array[$i]=0
     done
     echo -e "${yellow}==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all ($len)${nc}"
     read -p $'\033[33m==> \033[0m' input
@@ -137,12 +139,12 @@ if [ "$total" -gt 0 ]; then
     i=0 && j=0
     while [ "$i" -lt "$len" ]; do
         if [ "${select_array[$i]}" == "1" ]; then
-            title=${title_array[$i]}
+            title=$(echo ${url_array[$i]} | cut -d '/' -f 3)
             create d "$script_dir/$folder/$title"
 
             ((j++))
             awk 'BEGIN{printf "\033[35m\n%d/%d (%.2f%)\033[0m", '$j', '$total', (100 * '$j'/'$total')}'
-            echo -e " $title"
+            echo " ${title_array[$i]}"
 
             d_curl "http://papers.nips.cc${url_array[$i]}" "$script_dir/html/paper.html" s
 
@@ -168,7 +170,7 @@ if [ "$total" -gt 0 ]; then
             if [ -f "$script_dir/$folder/$title/${pdf_name:0:-4}.zip" ]; then
                 echo -e "${yellow}Supplemental already exists!${nc}"
             else
-                echo -e "${yellow}Download Supplemental: ${nc}"
+                echo -e "${yellow}Download supplemental: ${nc}"
                 d_curl "http://papers.nips.cc$supplemental_url" "$script_dir/$folder/$title/${pdf_name:0:-4}.zip" ns
             fi
 
@@ -178,6 +180,22 @@ if [ "$total" -gt 0 ]; then
             else
                 echo -e "${yellow}Download review: ${nc}"
                 d_curl "$review_url" "$script_dir/$folder/$title/review.html" ns
+            fi
+
+            if [ -f "$script_dir/$folder/$title/${pdf_name:0:-4}.zip" ]; then
+                if [ -f "$script_dir/$folder/$title/$script_dir/$folder/$title/${pdf_name:0:-4}-merge.pdf" ]; then
+                    echo -e "${yellow}Merge file already exists!${nc}"
+                else
+                    echo -e "${yellow}Unzip and merge:${nc} ${pdf_name:0:-4}-merge.pdf"
+                    create d "$script_dir/$folder/$title/supp/"
+                    unzip -q "$script_dir/$folder/$title/${pdf_name:0:-4}.zip" -d "$script_dir/$folder/$title/supp/"
+                    merge_command="gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=\"$script_dir/$folder/$title/${pdf_name:0:-4}-merge.pdf\" \"$script_dir/$folder/$title/$pdf_name\""
+                    for line in $(find "$script_dir/$folder/$title/supp/" -maxdepth 1 -regextype posix-extended -iregex ".*\.(pdf|PDF)" | tr " " "\?"); do
+                        merge_command="$merge_command \"$line\""
+                    done
+                    eval "$merge_command"
+                    delete d "$script_dir/$folder/$title/supp/"
+                fi
             fi
 
             delete f "$script_dir/html/paper.html"
