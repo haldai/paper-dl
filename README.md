@@ -8,7 +8,7 @@ This repository provides the shell script for downloading ai conference proceedi
 - curl: download tool
 - unzip: extract supplementary
 - perl: non-greedy matching for regular expression
-- ghostscript: merge pdf
+- ghostscript: merge pdf files
 
 ## Installation
 
