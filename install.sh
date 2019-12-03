@@ -1,1 +1,1 @@
-sudo cp ./paper-dl /usr/local/bin/ 
+sudo cp ./paper-dl /usr/local/bin/

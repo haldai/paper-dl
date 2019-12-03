@@ -9,7 +9,7 @@ purple="\033[35m"
 skyblue="\033[36m"
 nc="\033[0m"
 
-# create d "html" || create f "select.txt"
+# create d html || create f a.txt
 function create() {
     case "$1" in
     "d")
@@ -27,7 +27,7 @@ function create() {
     esac
 }
 
-# delete d "html" || delete f "select.txt"
+# delete d html || delete f a.txt
 function delete() {
     case "$1" in
     "d")
@@ -43,7 +43,7 @@ function delete() {
     esac
 }
 
-# d_curl "http://proceedings.mlr.press/" "html/jmlr root.html" [s]
+# d_curl http://proceedings.mlr.press/ html/jmlr root.html [s]
 function d_curl() {
     while [ ! -f "$2" ]; do
         if [ $(curl -o /dev/null -sIL -w %{http_code} "$1") == 200 ]; then
@@ -60,11 +60,11 @@ function d_curl() {
     done
 }
 
-if [ $# -lt 2 ]; then # 如果参数少于两个
+if [ $# -lt 2 ]; then
     echo -e "${red}Error: two parameters at least!${nc}" && exit 1
 fi
 
-create d '.html' # 创建存放html的目录
+create d '.html'
 
 case $1 in
 'pmlr')
@@ -79,28 +79,28 @@ case $1 in
 
     d_curl "$host$proceeding_url/" ".html/$1-$2.html" s
 
-    i=0 && j=0 && url_line=0 # 读取文章列表
+    i=0 && j=0 && url_line=0
     while read -r line; do
         if [[ "$line" =~ '"title"' ]]; then
-            if [ $# == 2 ]; then # 如果没有参数 直接保存进数组
+            if [ $# == 2 ]; then
                 title_array[$i]=$(echo $line | sed -n 's/.*title".\(.*\).\/p.*/\1/p') && ((i++))
-            else # 如果还有关键词
+            else
                 keywords_find=1
                 for arg in $@; do
                     arg=${arg,,}
-                    if [ "$arg" != "$1" ] && [ "$arg" != "$2" ] && [[ ! "$line" =~ "$arg" ]] && [[ ! "$line" =~ "${arg^}" ]] && [[ ! "$line" =~ "${arg,}" ]] && [[ ! "$line" =~ "${arg^^}" ]]; then # 如果有一个关键词没找到
+                    if [ "$arg" != "$1" ] && [ "$arg" != "$2" ] && [[ ! "$line" =~ "$arg" ]] && [[ ! "$line" =~ "${arg^}" ]] && [[ ! "$line" =~ "${arg,}" ]] && [[ ! "$line" =~ "${arg^^}" ]]; then
                         keywords_find=0
                     fi
                 done
-                if [ "$keywords_find" == 1 ]; then # 如果包含了全部关键词
+                if [ "$keywords_find" == 1 ]; then
                     title_array[$i]=$(echo $line | sed -n 's/.*title".\(.*\).\/p.*/\1/p') && url_line=1 && ((i++))
                 fi
             fi
         fi
         if [[ "$line" =~ 'Download PDF' ]]; then
-            if [ $# == 2 ]; then # 如果没有参数 直接保存进数组
+            if [ $# == 2 ]; then
                 url_array[$j]="$line" && ((j++))
-            else # 如果还有关键词
+            else
                 if [ "$url_line" == 1 ]; then
                     url_array[$j]="$line" && url_line=0 && ((j++))
                 fi
@@ -120,22 +120,22 @@ case $1 in
 
     d_curl "$host$proceeding_url" ".html/$1-$2.html" s
 
-    i=0 # 读取文章列表
+    i=0
     while read -r line; do
         if [[ "$line" =~ '<li><a href="/paper/' ]]; then
-            if [ ${#@} == 2 ]; then # 如果只有卷号 直接保存进数组
+            if [ ${#@} == 2 ]; then
                 url_array[$i]=$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*href="\(.*\)".*/\1/p')
                 title_array[$i]=$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*">\(.*\)/\1/p')
                 ((i++))
-            else # 如果还有关键词
+            else
                 keywords_find=1
                 for arg in $@; do
                     arg=${arg,,}
-                    if [ "$arg" != "$1" ] && [ "$arg" != "$2" ] && [[ ! "$line" =~ "$arg" ]] && [[ ! "$line" =~ "${arg^}" ]] && [[ ! "$line" =~ "${arg,}" ]] && [[ ! "$line" =~ "${arg^^}" ]]; then # 如果有一个关键词没找到
+                    if [ "$arg" != "$1" ] && [ "$arg" != "$2" ] && [[ ! "$line" =~ "$arg" ]] && [[ ! "$line" =~ "${arg^}" ]] && [[ ! "$line" =~ "${arg,}" ]] && [[ ! "$line" =~ "${arg^^}" ]]; then
                         keywords_find=0
                     fi
                 done
-                if [ "$keywords_find" == 1 ]; then # 如果包含了全部关键词
+                if [ "$keywords_find" == 1 ]; then
                     url_array[$i]=$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*href="\(.*\)".*/\1/p')
                     title_array[$i]="$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*">\(.*\)/\1/p')"
                     ((i++))
@@ -148,10 +148,10 @@ esac
 
 delete f '.html/host.html'
 
-len=$i # 总查询结果数目
+len=$i
 
 if [ "$i" -gt 0 ]; then
-    while [ "$i" -gt 0 ]; do # 倒序输出查询结果
+    while [ "$i" -gt 0 ]; do
         echo -e "${purple}$i${nc} \c"
         echo "${title_array[$(($i - 1))]}"
         ((i--)) && select_array[$i]=0
@@ -162,7 +162,6 @@ else
     echo -e "${red}Warning: no papers meet the query conditions!${nc}" && exit 1
 fi
 
-# 处理输入
 if [ -z "${input// /}" ]; then
     for i in "${!select_array[@]}"; do
         select_array[i]=1
@@ -222,7 +221,6 @@ else
     done
 fi
 
-# 检查是否有下载任务
 total=0
 for value in ${select_array[@]}; do
     if [ "$value" == 1 ]; then
@@ -332,5 +330,5 @@ if [ "$total" -gt 0 ]; then
         ((i++))
     done
 else
-    echo -e "${red}Warning: there is no papers to download!${nc}"
+    echo -e "${red}Warning: there is nothing to do!${nc}"
 fi
