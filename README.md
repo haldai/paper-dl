@@ -32,7 +32,6 @@ When you download some proceeding for the first time, it will take a few moment 
 
 If no keywords given, show all the papers:
 
-```
 └─[$] <> paper-dl pmlr 97
 773 Natural Analysts in Adaptive Data Analysis
 772 Fast Context Adaptation via Meta-Learning
@@ -58,7 +57,7 @@ Merge: rajput19a-merge.pdf
 2/2 (100.00%) Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin
 Download paper:
 Proceedings of ICML 20 100%[==========================>] 343.12K   223KB/s  用时 1.5s
-```
+
 
 Highlight the downloaded papers before:
 
