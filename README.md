@@ -51,16 +51,13 @@ If no keywords given, show all the papers:
 1/2 (50.00%) Does Data Augmentation Lead to Positive Margin?
 Download paper:
 Proceedings of ICML 20 100%[==========================>] 700.19K   310KB/s  用时 2.3s
-2019-12-04 04:06:18 URL:http://proceedings.mlr.press/v97/rajput19a/rajput19a.pdf [716997/716997] -> "Proceedings of ICML 2019 /Does Data Augmentation Lead to Positive Margin?/rajput19a.pdf" [1]
 Download supplementary:
 Proceedings of ICML 20 100%[==========================>] 777.58K   460KB/s  用时 1.7s
-2019-12-04 04:06:21 URL:http://proceedings.mlr.press/v97/rajput19a/rajput19a-supp.pdf [796238/796238] -> "Proceedings of ICML 2019 /Does Data Augmentation Lead to Positive Margin?/rajput19a-supp.pdf" [1]
 Merge: rajput19a-merge.pdf
 
 2/2 (100.00%) Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin
 Download paper:
 Proceedings of ICML 20 100%[==========================>] 343.12K   223KB/s  用时 1.5s
-2019-12-04 04:06:25 URL:http://proceedings.mlr.press/v97/wu19c/wu19c.pdf [351358/351358] -> "Proceedings of ICML 2019 /Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin/wu19c.pdf" [1]
 ```
 
 Highlight the downloaded papers before:
@@ -78,7 +75,6 @@ Highlight the downloaded papers before:
 1/1 (100.00%) Optimal Minimal Margin Maximization with Boosting
 Download paper:
 Proceedings of ICML 20 100%[==========================>]   1.38M   448KB/s  用时 3.2s
-2019-12-04 04:32:57 URL:http://proceedings.mlr.press/v97/mathiasen19a/mathiasen19a.pdf [1446479/1446479] -> "Proceedings of ICML 2019 /Optimal Minimal Margin Maximization with Boosting/mathiasen19a.pdf" [1]
 ```
 
 Multiple choosing manners:
