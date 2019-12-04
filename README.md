@@ -30,10 +30,9 @@ When you download some proceeding for the first time, it will take some time to 
 
 ## Examples
 
-If no keywords input, show all the papers:
+If no keywords given, show all the papers:
 
 ```shell
-┌─[murongxixi@murongxixi-xps] - [~] - [二 12月 03, 11:37]
 └─[$] <> paper-dl pmlr 97
 773 Natural Analysts in Adaptive Data Analysis
 772 Fast Context Adaptation via Meta-Learning
