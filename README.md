@@ -73,7 +73,7 @@ Highlight the downloaded papers before:
 3 Lexicographic and Depth-Sensitive Margins in Homogeneous and Non-Homogeneous Deep Models
 2 Optimal Minimal Margin Maximization with Boosting
 1 Fast and Flexible Inference of Joint Distributions from their Marginals
-==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (3)
+==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (5-2=3)
 ==> 2
 
 1/1 (100.00%) Optimal Minimal Margin Maximization with Boosting
@@ -138,7 +138,7 @@ Multiple keywords are splitted by spaces and repeated download is avoided automa
 └─[$] <> paper-dl nips 31 mirror descent
 2 Constant Regret, Generalized Mixability, and Mirror Descent (Downloaded)
 1 Stochastic Composite Mirror Descent: Optimal Bounds with High Probabilities
-==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (1)
+==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (2-1=1)
 ==>
 
 1/1 (100.00%) Stochastic Composite Mirror Descent: Optimal Bounds with High Probabilities
