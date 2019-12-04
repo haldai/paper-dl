@@ -30,6 +30,8 @@ When you download some proceeding for the first time, it will take some time to 
 
 ## Examples
 
+If no keywords input, show all the papers:
+
 ```shell
 ┌─[murongxixi@murongxixi-xps] - [~] - [二 12月 03, 11:37]
 └─[$] <> paper-dl pmlr 97
@@ -62,8 +64,9 @@ Proceedings of ICML 20 100%[==========================>] 343.12K   223KB/s  用�
 2019-12-04 04:06:25 URL:http://proceedings.mlr.press/v97/wu19c/wu19c.pdf [351358/351358] -> "Proceedings of ICML 2019 /Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin/wu19c.pdf" [1]
 ```
 
+Highlight the downloaded papers before:
+
 ```shell
-┌─[murongxixi@murongxixi-xps] - [~/ML/Conference] - [三 12月 04, 04:32]
 └─[$] <> paper-dl pmlr 97 margin
 5 Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin (Downloaded)
 4 Does Data Augmentation Lead to Positive Margin? (Downloaded)
@@ -79,8 +82,9 @@ Proceedings of ICML 20 100%[==========================>]   1.38M   448KB/s  用�
 2019-12-04 04:32:57 URL:http://proceedings.mlr.press/v97/mathiasen19a/mathiasen19a.pdf [1446479/1446479] -> "Proceedings of ICML 2019 /Optimal Minimal Margin Maximization with Boosting/mathiasen19a.pdf" [1]
 ```
 
+Multiple choosing manners:
+
 ```shell
-┌─[murongxixi@murongxixi-xps] - [~/ML/Conference] - [二 12月 03, 17:39]
 └─[$] <> paper-dl nips 31 regret
 9 Regret Bounds for Online Portfolio Selection with a Cardinality Constraint
 8 Regret bounds for meta Bayesian optimization with an unknown Gaussian process prior
@@ -92,42 +96,59 @@ Proceedings of ICML 20 100%[==========================>]   1.38M   448KB/s  用�
 2 Regret Bounds for Robust Adaptive Control of the Linear Quadratic Regulator
 1 Acceleration through Optimistic No-Regret Dynamics
 ==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (9)
-==> 6
+==> 5-6 2
 
-1/1 (100.00%) Constant Regret, Generalized Mixability, and Mirror Descent
+1/3 (33.33%) Regret Bounds for Robust Adaptive Control of the Linear Quadratic Regulator
 Download paper:
-Advances in Neural Inf 100%[==========================>] 351.82K  8.84KB/s  用时 35s
-2019-12-04 03:59:50 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent.pdf [360264/360264] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/7971-constant-regret-generalized-mixability-and-mirror-descent/7971-constant-regret-generalized-mixability-and-mirror-descent.pdf" [1]
+Advances in Neural Inf 100%[==========================>] 937.70K   644KB/s  用时 1.5s
+Download bib:
+Advances in Neural Inf     [ <=>                       ]     584  --.-KB/s  用时 0s
+Download supplemental:
+Advances in Neural Inf 100%[==========================>]   1.62M   686KB/s  用时 2.4s
+Download review:
+Advances in Neural Inf 100%[==========================>]  11.55K  --.-KB/s  用时 0.001s
+Unzip and merge: 7673-regret-bounds-for-robust-adaptive-control-of-the-linear-quadratic-regulator-merge.pdf
+
+2/3 (66.67%) Efficient online algorithms for fast-rate regret bounds under sparsity
+Download paper:
+Advances in Neural Inf 100%[==========================>] 768.58K   465KB/s  用时 1.7s
+Download bib:
+Advances in Neural Inf     [ <=>                       ]     533  --.-KB/s  用时 0s
+Download supplemental:
+Advances in Neural Inf 100%[==========================>] 455.67K   375KB/s  用时 1.2s
+Download review:
+Advances in Neural Inf 100%[==========================>]  17.54K  87.5KB/s  用时 0.2s
+Unzip and merge: 7934-efficient-online-algorithms-for-fast-rate-regret-bounds-under-sparsity-merge.pdf
+
+3/3 (100.00%) Constant Regret, Generalized Mixability, and Mirror Descent
+Download paper:
+Advances in Neural Inf 100%[==========================>] 351.82K   336KB/s  用时 1.0s
 Download bib:
 Advances in Neural Inf     [ <=>                       ]     509  --.-KB/s  用时 0s
-2019-12-04 03:59:51 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent/bibtex [509] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/7971-constant-regret-generalized-mixability-and-mirror-descent/7971-constant-regret-generalized-mixability-and-mirror-descent.bib" [1]
 Download supplemental:
-Advances in Neural Inf 100%[==========================>]   2.30M  9.38KB/s  用时 4m 20s
-2019-12-04 04:04:12 URL:http://papers.nips.cc/paper/7971-constant-regret-generalized-mixability-and-mirror-descent-supplemental.zip [2415916/2415916] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/7971-constant-regret-generalized-mixability-and-mirror-descent/7971-constant-regret-generalized-mixability-and-mirror-descent.zip" [1]
+Advances in Neural Inf 100%[==========================>]   2.30M   608KB/s  用时 3.9s
 Download review:
-Advances in Neural Inf 100%[==========================>]   7.99K  4.79KB/s  用时 1.7s
-2019-12-04 04:04:14 URL:http://media.nips.cc/nipsbooks/nipspapers/paper_files/nips31/reviews/3695.html [8184/8184] -> "Advances in Neural Information Processing Systems 31 (NIPS 2018)/7971-constant-regret-generalized-mixability-and-mirror-descent/review.html" [1]
+Advances in Neural Inf 100%[==========================>]   7.99K  --.-KB/s  用时 0s
 Unzip and merge: 7971-constant-regret-generalized-mixability-and-mirror-descent-merge.pdf
 ```
 
+Multiple keywords are splitted by spaces and repeated download is avoided automatically:
+
 ```shell
-┌─[murongxixi@murongxixi-xps] - [~/ML/Conference] - [三 12月 04, 09:50]
 └─[$] <> paper-dl nips 31 mirror descent
 2 Constant Regret, Generalized Mixability, and Mirror Descent (Downloaded)
 1 Stochastic Composite Mirror Descent: Optimal Bounds with High Probabilities
 ==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (1)
-==> 
-1
-0
+==>
 
 1/1 (100.00%) Stochastic Composite Mirror Descent: Optimal Bounds with High Probabilities
-Download paper: 
-Advances in Neural Inf 100%[==========================>] 433.50K   413KB/s  用时 1.0s    
-Download bib: 
-Advances in Neural Inf     [ <=>                       ]     524  --.-KB/s  用时 0s      
-Download supplemental: 
-Advances in Neural Inf 100%[==========================>] 386.76K   367KB/s  用时 1.1s    
-Download review: 
-Advances in Neural Inf 100%[==========================>]   8.53K  --.-KB/s  用时 0s      
+Download paper:
+Advances in Neural Inf 100%[==========================>] 433.50K   413KB/s  用时 1.1s
+Download bib:
+Advances in Neural Inf     [ <=>                       ]     524  --.-KB/s  用时 0s
+Download supplemental:
+Advances in Neural Inf 100%[==========================>] 386.76K   381KB/s  用时 1.0s
+Download review:
+Advances in Neural Inf 100%[==========================>]   8.53K  --.-KB/s  用时 0s
 Unzip and merge: 7425-stochastic-composite-mirror-descent-optimal-bounds-with-high-probabilities-merge.pdf
 ```
