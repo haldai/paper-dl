@@ -57,8 +57,9 @@ if [ $# -lt 2 ]; then
     echo -e "${red}Error: two parameters at least!${nc}" && exit 1
 fi
 
+create d "$HOME/.cache/"
 html_cache="$HOME/.cache/paper-dl"
-create d $html_cache
+create d "$html_cache"
 delete "$html_cache/host.html"
 
 case $1 in
@@ -166,8 +167,7 @@ if [ "$i" -gt 0 ]; then
             ;;
         esac
         if [[ "$exist_files" =~ "$title" ]]; then
-            printf "${cyan}%s${nc}" "${title_array[$i]}"
-            echo -e "${yellow} (Downloaded)${nc}"
+            printf "${cyan}%s ${yellow}(Downloaded)${nc}\n" "${title_array[$i]}"
             select_array[$i]=0
             ((j--)) && ((k++))
         else
