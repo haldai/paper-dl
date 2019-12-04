@@ -70,7 +70,7 @@ Proceedings of ICML 20 100%[==========================>] 343.12K   223KB/s  ç”¨æ
 3 Lexicographic and Depth-Sensitive Margins in Homogeneous and Non-Homogeneous Deep Models
 2 Optimal Minimal Margin Maximization with Boosting
 1 Fast and Flexible Inference of Joint Distributions from their Marginals
-==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (5)
+==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (3)
 ==> 2
 
 1/1 (100.00%) Optimal Minimal Margin Maximization with Boosting

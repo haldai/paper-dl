@@ -48,7 +48,7 @@ function d_wget() {
     if [ "$3" == "q" ]; then # slient mode
         wget -t0 -q "$1" -O "$2"
     else
-        wget -t0 -c -nv --show-progress "$1" -O "$2"
+        wget -t0 -q --show-progress "$1" -O "$2"
     fi
 }
 
@@ -64,16 +64,18 @@ case $1 in
 'pmlr')
     host='http://proceedings.mlr.press/'
     d_wget $host "$html_cache/host.html" q
-    folder=$(cat "$html_cache/host.html" | sed -n "s/.*$2.*\/a. \(.*\)/\1/p")
+    folder=$(cat "$html_cache/host.html" | sed -n "s/.*$2.*\/a.\(.*\)/\1/p")
     proceeding_url=$(cat "$html_cache/host.html" | sed -n "s/.*href=\"\(.*\)\".*$2.*/\1/p")
     ;;
 'nips')
     host='http://papers.nips.cc'
     d_wget $host "$html_cache/host.html" q
-    folder=$(cat "$html_cache/host.html" | sed -n "s/.*\".\(.*NIPS $2.*\).\/a.*/\1/p")
-    proceeding_url=$(cat "$html_cache/host.html" | sed -n "s/.*href=\"\(.*\)\".*NIPS $2.*/\1/p")
+    folder=$(cat "$html_cache/host.html" | sed -n "s/.*\".\(.*Systems $2.*\).\/a.*/\1/p")
+    proceeding_url=$(cat "$html_cache/host.html" | sed -n "s/.*href=\"\(.*\)\".*Systems $2.*/\1/p")
     ;;
 esac
+
+folder=$(echo "$folder" | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
 
 delete f "$html_cache/host.html"
 
@@ -131,7 +133,7 @@ while read -r line; do
                 done
                 if [ "$keywords_find" == 1 ]; then
                     url_array[$i]=$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*href="\(.*\)".*/\1/p')
-                    title_array[$i]="$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*">\(.*\)/\1/p')"
+                    title_array[$i]=$(echo $line | perl -pe 's|(\">.*?)</a>.*|\1|' | sed -n 's/.*">\(.*\)/\1/p')
                     ((i++))
                 fi
             fi
@@ -140,7 +142,7 @@ while read -r line; do
     esac
 done <"$html_cache/$1-$2.html"
 
-len=$i
+len=$i && j=$i
 
 if [ -d "$folder" ]; then
     exist_files=$(ls "$folder")
@@ -149,37 +151,43 @@ fi
 if [ "$i" -gt 0 ]; then
     while [ "$i" -gt 0 ]; do
         echo -e "${purple}$i${nc} \c"
+        ((i--))
         case $1 in
         'pmlr')
-            title=${title_array[$(($i - 1))]}
+            title=${title_array[$i]}
             ;;
         'nips')
-            title=${url_array[$(($i - 1))]}
+            title=${url_array[$i]}
             title=(${title//\// })
             title=${title[-1]}
             title=${title:0:-4}
             ;;
         esac
         if [[ "$exist_files" =~ "$title" ]]; then
-            printf "%s" "${title_array[$(($i - 1))]}"
+            printf "%s" "${title_array[$i]}"
             echo -e "${yellow} (Downloaded)${nc}"
+            select_array[$i]=0
+            ((j--))
         else
-            echo "${title_array[$(($i - 1))]}"
+            select_array[$i]=1
+            echo "${title_array[$i]}"
         fi
-
-        ((i--)) && select_array[$i]=0
     done
-    echo -e "${yellow}==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all ($len)${nc}"
-    read -p $'\033[33m==> \033[0m' input
+    if [ "$j" == 0 ]; then
+        echo -e "${red}==> All papers have been downloaded!${nc}" && exit 1
+    else
+        echo -e "${yellow}==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all ($j)${nc}"
+        read -p $'\033[33m==> \033[0m' input
+    fi
 else
     echo -e "${red}Warning: no papers meet the query conditions!${nc}" && exit 1
 fi
 
-if [ -z "${input// /}" ]; then
-    for i in "${!select_array[@]}"; do
-        select_array[i]=1
+if [ -n "${input// /}" ]; then
+    echo "aaaaa"
+    for k in "${!select_array[@]}"; do
+        select_array[$k]=0
     done
-else
     input=($input)
     for value in ${input[@]}; do
         if [ "$(echo "$value" | awk '{print($0~/^[1-9][0-9]*-[1-9][0-9]*$/)}')" == 1 ]; then
@@ -236,6 +244,7 @@ fi
 
 total=0
 for value in ${select_array[@]}; do
+    echo "$value"
     if [ "$value" == 1 ]; then
         ((total++))
     fi
