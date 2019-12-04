@@ -21,18 +21,18 @@ sudo ./install.sh
 ## Usage
 
 ```shell
-paper-dl proceeding volume [keyword1 keyword2 ...]
+paper-dl (pmlr|nips) volume [keyword1 keyword2 ...]
 ```
 
-The first two args are necessary. `proceeding` can be `pmlr` or `nips`. `volume` can be found in their websites. Keywords list is optional.
+The first two args are necessary. `volume` can be found in their websites. Keywords list is optional.
 
-When you download some proceeding for the first time, it will take some time to cache the .html file.
+When you download some proceeding for the first time, it will take a few moment to cache the .html file.
 
 ## Examples
 
 If no keywords given, show all the papers:
 
-```shell
+```
 └─[$] <> paper-dl pmlr 97
 773 Natural Analysts in Adaptive Data Analysis
 772 Fast Context Adaptation via Meta-Learning
@@ -62,7 +62,7 @@ Proceedings of ICML 20 100%[==========================>] 343.12K   223KB/s  用�
 
 Highlight the downloaded papers before:
 
-```shell
+```
 └─[$] <> paper-dl pmlr 97 margin
 5 Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin (Downloaded)
 4 Does Data Augmentation Lead to Positive Margin? (Downloaded)
@@ -79,7 +79,7 @@ Proceedings of ICML 20 100%[==========================>]   1.38M   448KB/s  用�
 
 Multiple choosing manners:
 
-```shell
+```
 └─[$] <> paper-dl nips 31 regret
 9 Regret Bounds for Online Portfolio Selection with a Cardinality Constraint
 8 Regret bounds for meta Bayesian optimization with an unknown Gaussian process prior
@@ -129,7 +129,7 @@ Unzip and merge: 7971-constant-regret-generalized-mixability-and-mirror-descent-
 
 Multiple keywords are splitted by spaces and repeated download is avoided automatically:
 
-```shell
+```
 └─[$] <> paper-dl nips 31 mirror descent
 2 Constant Regret, Generalized Mixability, and Mirror Descent (Downloaded)
 1 Stochastic Composite Mirror Descent: Optimal Bounds with High Probabilities
