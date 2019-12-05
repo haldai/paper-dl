@@ -65,9 +65,11 @@ pmlr)
 nips)
     host=http://papers.nips.cc
     wget -t 0 -q -O $html_cache/index.html $host
-    proceeding_name=$(cat $html_cache/index.html | sed -n "s/.*\".\(.*Systems $2.*\).\/a.*/\1/p")
-    proceeding_url=$(cat $html_cache/index.html | sed -n "s/.*href=\"\(.*\)\".*Systems $2.*/\1/p")
+    proceeding_name=$(cat $html_cache/index.html | sed -n "s/.*\".\(.*Systems $2 .NIPS.*\).\/a.*/\1/p")
+    proceeding_url=$(cat $html_cache/index.html | sed -n "s/.*href=\"\(.*\)\".*Systems $2 .NIPS.*/\1/p")
     ;;
+ijcai) ;;
+
 esac
 
 proceeding_name=$(echo $proceeding_name | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
@@ -79,7 +81,7 @@ fi
 delete f $html_cache/index.html
 
 if [ ! -f $html_cache/$1-$2.html ]; then
-    echo -e "${yellow}It's the first time to download $proceeding_name. Please be patient while caching the paper list:${nc}"
+    echo -e "${yellow}Caching the paper list:${nc}"
     wget -t 0 -q --show-progress -O $html_cache/$1-$2.html $host$proceeding_url
 fi
 
@@ -138,11 +140,14 @@ while read -r line; do
                 url_array[$i]=$(echo $line | perl -pe 's|(">.*?)</a>.*|\1|' | sed -n 's/.*href="\(.*\)".*/\1/p')
                 title_array[$i]=$(echo $line | perl -pe 's|(">.*?)</a>.*|\1|' | sed -n 's/.*">\(.*\)/\1/p')
                 line_array=($(echo $line | tr ' ' '?' | tr ',' ' '))
-                author=""
+                author_list=""
                 for value in "${line_array[@]}"; do
-                    author="$author$(echo $value | sed -n 's/.*"author">\(.*\)<\/a>.*/\1/p' | tr '?' ' '), "
+                    author=$(echo $value | sed -n 's/.*"author".\(.*\).\/a.*/\1/p' | tr '?' ' ')
+                    if [ -n "$author" ]; then
+                        author_list="$author_list$author, "
+                    fi
                 done
-                author_array[$i]="${author:0:-2}"
+                author_array[$i]="${author_list%, }"
                 ((i++))
             else
                 keywords_find=1
@@ -156,11 +161,14 @@ while read -r line; do
                     url_array[$i]=$(echo $line | perl -pe 's|(">.*?)</a>.*|\1|' | sed -n 's/.*href="\(.*\)".*/\1/p')
                     title_array[$i]=$(echo $line | perl -pe 's|(">.*?)</a>.*|\1|' | sed -n 's/.*">\(.*\)/\1/p')
                     line_array=($(echo $line | tr ' ' '?' | tr ',' ' '))
-                    author=""
+                    author_list=""
                     for value in "${line_array[@]}"; do
-                        author="$author$(echo $value | sed -n 's/.*"author">\(.*\)<\/a>.*/\1/p' | tr '?' ' '), "
+                        author=$(echo $value | sed -n 's/.*"author".\(.*\).\/a.*/\1/p' | tr '?' ' ')
+                        if [ -n "$author" ]; then
+                            author_list="$author_list$author, "
+                        fi
                     done
-                    author_array[$i]="${author:0:-2}"
+                    author_array[$i]="${author_list%, }"
                     ((i++))
                 fi
             fi
@@ -199,7 +207,15 @@ if [ "$i" -gt 0 ]; then
             select_array[$i]=1
             echo "${title_array[$i]}"
         fi
-        echo -e "${cyan}\033[3m    ${author_array[$i]}\033[23m${nc}"
+        if [ "$i" -lt 9 ]; then
+            echo -e "${cyan}\033[3m  ${author_array[$i]}\033[23m${nc}"
+        elif [ "$i" -lt 99 ]; then
+            echo -e "${cyan}\033[3m   ${author_array[$i]}\033[23m${nc}"
+        elif [ "$i" -lt 999 ]; then
+            echo -e "${cyan}\033[3m    ${author_array[$i]}\033[23m${nc}"
+        else
+            echo -e "${cyan}\033[3m     ${author_array[$i]}\033[23m${nc}"
+        fi
     done
     if [ "$j" == 0 ]; then
         echo -e "${red}==> All papers have been downloaded!${nc}" && exit 1
@@ -291,7 +307,7 @@ if [ "$total" -gt 0 ]; then
 
             ((j++))
             awk 'BEGIN{printf "\033[35m\n%d/%d (%.2f%)\033[0m", '$j', '$total', (100 * '$j'/'$total')}'
-            echo -e " $title"
+            echo -e " $title ${cyan}\033[3m${author_array[$i]}\033[23m${nc}"
 
             case $1 in
             'pmlr')
@@ -335,27 +351,31 @@ if [ "$total" -gt 0 ]; then
                 wget -t 0 -q --show-progress -P . $host$bib_url
 
                 supplemental_url=$(cat "$html_cache/paper.html" | sed -n 's/.*href="\(.*\)".*Supplemental.*/\1/p')
-                echo -e "${yellow}Download supplemental: ${nc}"
-                wget -t 0 -q --show-progress -P . $host$supplemental_url
+                if [ -n "$supplemental_url" ]; then
+                    echo -e "${yellow}Download supplemental: ${nc}"
+                    wget -t 0 -q --show-progress -P . $host$supplemental_url
 
-                supplemental=$(find . -maxdepth 1 -regextype posix-extended -iregex '.*\.(zip)')
-                if [ -n "$supplemental" ]; then
-                    create d supp
-                    unzip -q "$supplemental" -d supp
-                    merge_command="gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile='${pdf_name:0:-4}-merge.pdf' '$pdf_name'"
-                    for line in $(find supp -maxdepth 1 -regextype posix-extended -iregex '.*\.(pdf)' | tr ' ' '\?'); do
-                        merge_command="$merge_command '$line'"
-                    done
-                    merge_command=$(echo "$merge_command" | tr '\?' ' ')
-                    eval "$merge_command"
-                    delete d supp
-                else
-                    echo "no supplemental"
+                    supplemental=$(find . -maxdepth 1 -regextype posix-extended -iregex '.*\.(zip)')
+                    if [ -n "$supplemental" ]; then
+                        create d supp
+                        unzip -q "$supplemental" -d supp
+                        merge_command="gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile='${pdf_name:0:-4}-merge.pdf' '$pdf_name'"
+                        for line in $(find supp -maxdepth 1 -regextype posix-extended -iregex '.*\.(pdf)' | tr ' ' '\?'); do
+                            merge_command="$merge_command '$line'"
+                        done
+                        merge_command=$(echo "$merge_command" | tr '\?' ' ')
+                        eval "$merge_command"
+                        delete d supp
+                    else
+                        echo "no supplemental"
+                    fi
                 fi
 
                 review_url=$(cat "$html_cache/paper.html" | sed -n 's/.*href="\/\/\(.*\)".*Reviews.*/\1/p')
-                echo -e "${yellow}Download review: ${nc}"
-                wget -t 0 -q --show-progress -P . $review_url
+                if [ -n "$review_url" ]; then
+                    echo -e "${yellow}Download review: ${nc}"
+                    wget -t 0 -q --show-progress -P . $review_url
+                fi
 
                 delete f "$html_cache/paper.html"
                 cd ..
