@@ -1,383 +1,486 @@
 #!/usr/bin/env bash
 
-black="\033[30m"
-red="\033[31m"
-green="\033[32m"
-yellow="\033[33m"
-blue="\033[34m"
-purple="\033[35m"
-cyan="\033[36m"
-gray="\033[37m"
-nc="\033[0m"
+BLACK='\033[0;30m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+GRAY='\033[0;37m'
+DARK_GRAY='\033[1;30m'
+DARK_RED='\033[1;31m'
+DARK_GREEN='\033[1;32m'
+BRILLIANT_YELLOW='\033[1;33m'
+DARK_BLUE='\033[1;34m'
+DARK_MAGENTA='\033[1;35m'
+DARK_CYAN='\033[1;36m'
+WHITE='\033[1;37m'
+NC='\033[0;0m'
 
 function create() {
     case "$1" in
-    "d")
+    '-d')
         if [ ! -d "$2" ]; then
             mkdir "$2"
+            return 1
         fi
         ;;
-    "f")
-        if [ -f "$2" ]; then
-            rm "$2"
-        else
+    '-f')
+        if [ ! -f "$2" ]; then
             touch "$2"
+            return 1
         fi
         ;;
+    *) return 0 ;;
     esac
 }
 
 function delete() {
     case "$1" in
-    "d")
+    '-d')
         if [ -d "$2" ]; then
             rm -r "$2"
+            return 1
         fi
         ;;
-    "f")
+    '-f')
         if [ -f "$2" ]; then
             rm "$2"
+            return 1
         fi
         ;;
+    *) return 0 ;;
     esac
 }
 
-if [ $# -lt 2 ]; then
-    echo -e "${red}Error: two args at least!${nc}" && exit 1
-fi
+PROCEEDING=""
+VOLUME=""
+YEAR=""
+KEYWORD=""
+AUTHOR=""
 
-if [ "$1" != pmlr ] && [ "$1" != nips ]; then
-    echo -e "${red}Error: illegal 1st arg!${nc}" && exit 1
-fi
-
-create d "$HOME/.cache"
-create d "$HOME/.cache/paper-dl"
-create d "$HOME/.cache/paper-dl/$1"
-html_cache="$HOME/.cache/paper-dl/$1"
-
-case $1 in
-pmlr)
-    host=http://proceedings.mlr.press/
-    wget -t 0 -q -O $html_cache/index.html $host
-    proceeding_name=$(cat $html_cache/index.html | sed -n "s/.*$2.*\/a.\(.*\)/\1/p")
-    proceeding_url=$(cat $html_cache/index.html | sed -n "s/.*href=\"\(.*\)\".*$2.*/\1/p")
-    ;;
-nips)
-    host=http://papers.nips.cc
-    wget -t 0 -q -O $html_cache/index.html $host
-    proceeding_name=$(cat $html_cache/index.html | sed -n "s/.*\".\(.*Systems $2 .NIPS.*\).\/a.*/\1/p")
-    proceeding_url=$(cat $html_cache/index.html | sed -n "s/.*href=\"\(.*\)\".*Systems $2 .NIPS.*/\1/p")
-    ;;
-ijcai) ;;
-
-esac
-
-proceeding_name=$(echo $proceeding_name | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
-
-if [ -z "$proceeding_name" ]; then
-    echo -e "${red}Error: illegal 2nd arg!${nc}" && exit 1
-fi
-
-delete f $html_cache/index.html
-
-if [ ! -f $html_cache/$1-$2.html ]; then
-    echo -e "${yellow}Caching the paper list:${nc}"
-    wget -t 0 -q --show-progress -O $html_cache/$1-$2.html $host$proceeding_url
-fi
-
-i=0 && j=0 && k=0 && url_line=0 && author_line=0
-while read -r line; do
-    case $1 in
-    'pmlr')
-        if [[ "$line" =~ '"title"' ]]; then
-            if [ $# == 2 ]; then
-                title_array[$i]=$(echo $line | sed -n 's/.*title".\(.*\).\/p.*/\1/p') && ((i++))
-            else
-                keywords_find=1
-                for arg in $@; do
-                    arg=${arg,,}
-                    if [ "$arg" != "$1" ] && [ "$arg" != "$2" ] && [[ ! "$line" =~ "$arg" ]] && [[ ! "$line" =~ "${arg^}" ]] && [[ ! "$line" =~ "${arg,}" ]] && [[ ! "$line" =~ "${arg^^}" ]]; then
-                        keywords_find=0
-                    fi
-                done
-                if [ "$keywords_find" == 1 ]; then
-                    title_array[$i]=$(echo $line | sed -n 's/.*title".\(.*\).\/p.*/\1/p') && author_line=1 && url_line=1 && ((i++))
-                fi
-            fi
-        fi
-
-        if [ $# == 2 ] || [ $author_line == 1 ]; then
-            if [[ "$line" =~ '</span>' ]] && [ "$flag" == 1 ]; then
-                flag=0
-                author_array[$k]="${author:0:-1}" && ((k++))
-                author_line=0
-            fi
-            if [ "$flag" == 1 ]; then
-                line=$(echo "$line" | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
-                if [ -n "$line" ]; then
-                    author="$author$line "
-                fi
-            fi
-            if [[ "$line" =~ '<span class="authors">' ]]; then
-                flag=1
-                author=""
-            fi
-        fi
-
-        if [[ "$line" =~ 'Download PDF' ]]; then
-            if [ $# == 2 ]; then
-                url_array[$j]="$line" && ((j++))
-            else
-                if [ "$url_line" == 1 ]; then
-                    url_array[$j]="$line" && url_line=0 && ((j++))
-                fi
-            fi
-        fi
-        ;;
-    'nips')
-        if [[ "$line" =~ '<li><a href="/paper/' ]]; then
-            if [ ${#@} == 2 ]; then
-                url_array[$i]=$(echo $line | perl -pe 's|(">.*?)</a>.*|\1|' | sed -n 's/.*href="\(.*\)".*/\1/p')
-                title_array[$i]=$(echo $line | perl -pe 's|(">.*?)</a>.*|\1|' | sed -n 's/.*">\(.*\)/\1/p')
-                line_array=($(echo $line | tr ' ' '?' | tr ',' ' '))
-                author_list=""
-                for value in "${line_array[@]}"; do
-                    author=$(echo $value | sed -n 's/.*"author".\(.*\).\/a.*/\1/p' | tr '?' ' ')
-                    if [ -n "$author" ]; then
-                        author_list="$author_list$author, "
-                    fi
-                done
-                author_array[$i]="${author_list%, }"
-                ((i++))
-            else
-                keywords_find=1
-                for arg in $@; do
-                    arg=${arg,,}
-                    if [ "$arg" != "$1" ] && [ "$arg" != "$2" ] && [[ ! "$line" =~ "$arg" ]] && [[ ! "$line" =~ "${arg^}" ]] && [[ ! "$line" =~ "${arg,}" ]] && [[ ! "$line" =~ "${arg^^}" ]]; then
-                        keywords_find=0
-                    fi
-                done
-                if [ "$keywords_find" == 1 ]; then
-                    url_array[$i]=$(echo $line | perl -pe 's|(">.*?)</a>.*|\1|' | sed -n 's/.*href="\(.*\)".*/\1/p')
-                    title_array[$i]=$(echo $line | perl -pe 's|(">.*?)</a>.*|\1|' | sed -n 's/.*">\(.*\)/\1/p')
-                    line_array=($(echo $line | tr ' ' '?' | tr ',' ' '))
-                    author_list=""
-                    for value in "${line_array[@]}"; do
-                        author=$(echo $value | sed -n 's/.*"author".\(.*\).\/a.*/\1/p' | tr '?' ' ')
-                        if [ -n "$author" ]; then
-                            author_list="$author_list$author, "
-                        fi
-                    done
-                    author_array[$i]="${author_list%, }"
-                    ((i++))
-                fi
-            fi
-        fi
-        ;;
-    esac
-done <$html_cache/$1-$2.html
-
-query_num=$i && j=$i
-
-if [ -d "$proceeding_name" ]; then
-    downloaded_paper_list=$(ls "$proceeding_name")
-fi
-
-downloaded_num=0
-if [ "$i" -gt 0 ]; then
-    while [ "$i" -gt 0 ]; do
-        echo -e "${purple}$i${nc} \c"
-        ((i--))
-        case $1 in
-        'pmlr')
-            title=${title_array[$i]}
+# parse the input args
+for var in "$@"; do
+    if [ "$flag" == 1 ]; then
+        case $i in
+        0) PROCEEDING=$var ;;
+        1) VOLUME=$var ;;
+        2) YEAR=$var ;;
+        3) KEYWORD=$var ;;
+        4) AUTHOR=$var ;;
+        esac
+        flag=0
+    else
+        case $var in
+        '-h' | '--help')
+            echo -e "Usage:"
+            echo -e "    paper-dl <operation>, details can be found at \033[4;1;37mhttps://github.com/murongxixi/paper-dl${NC}\n"
+            echo -e "Operations:"
+            echo -e "    paper-dl {-h --help}"
+            echo -e "    paper-dl {-c --clean}"
+            echo -e "    paper-dl {-V --version}\n"
+            echo -e "Configuration options:"
+            echo -e "    -p --proceeding       currently support: nips|pmlr                 (required)"
+            echo -e "    -v --volume           query by volume                              (semi-required)"
+            echo -e "    -y --year             query by year, exclusive with volume         (semi-required)"
+            echo -e "    -k --keyword          query by keyword                             (optional)"
+            echo -e "    -a --author           query by author, exclusive with keyword      (optional)"
+            exit 1
             ;;
-        'nips')
-            title=${url_array[$i]}
-            title=(${title//\// })
-            title=${title[-1]}
-            title=${title:0:-4}
+        '-c' | '--clean') # remove old or corrupt html in cache directory
+            clean=1
+            ;;
+        '-V' | '--version')
+            echo -e "paper-dl v${DARK_RED}1.1.1.191206${NC} -- ${YELLOW}murongxixi${NC}@\033[4;1;34mhttps://github.com/murongxixi/paper-dl${NC}" && exit 1
+            ;;
+        '-p' | '--proceeding')
+            flag=1 && i=0
+            ;;
+        '-v' | '--volume')
+            flag=1 && i=1
+            ;;
+        '-y' | '--year')
+            flag=1 && i=2
+            ;;
+        '-k' | '--keyword')
+            flag=1 && i=3
+            ;;
+        '-a' | '--author')
+            flag=1 && i=4
+            ;;
+        *)
+            echo -e "${RED}Error: unknown args!${NC}" && exit 1
             ;;
         esac
-        if [[ "$downloaded_paper_list" =~ "$title" ]]; then
-            printf "${gray}%s ${yellow}(Downloaded)${nc}\n" "${title_array[$i]}"
-            select_array[$i]=0
-            ((j--)) && ((downloaded_num++))
-        else
-            select_array[$i]=1
-            echo "${title_array[$i]}"
-        fi
-        if [ "$i" -lt 9 ]; then
-            echo -e "${cyan}\033[3m  ${author_array[$i]}\033[23m${nc}"
-        elif [ "$i" -lt 99 ]; then
-            echo -e "${cyan}\033[3m   ${author_array[$i]}\033[23m${nc}"
-        elif [ "$i" -lt 999 ]; then
-            echo -e "${cyan}\033[3m    ${author_array[$i]}\033[23m${nc}"
-        else
-            echo -e "${cyan}\033[3m     ${author_array[$i]}\033[23m${nc}"
-        fi
-    done
-    if [ "$j" == 0 ]; then
-        echo -e "${red}==> All papers have been downloaded!${nc}" && exit 1
-    else
-        if [ "$downloaded_num" == 0 ]; then
-            echo -e "${yellow}==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all ($query_num)${nc}"
-        else
-            echo -e "${yellow}==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all ($query_num-$downloaded_num=$j)${nc}"
-        fi
-        read -p $'\033[33m==> \033[0m' input
     fi
-else
-    echo -e "${red}Warning: no papers meet the query conditions!${nc}" && exit 1
+done
+
+if [ "${flag}" == 1 ]; then
+    echo -e "${RED}Error: incomplete args!${NC}" && exit 1
 fi
 
+# check the input args
+case $PROCEEDING in
+nips)
+    if [ -z "$VOLUME" ] && [ -z "$YEAR" ] && [ "$clean" != 1 ]; then
+        echo -e "${RED}Error: for ${DARK_RED}$PROCEEDING${RED}, args ${DARK_RED}volume${RED} and ${DARK_RED}year${RED} can not be both absent!${NC}" && exit 1
+    fi
+    HOST=http://papers.nips.cc
+    ;;
+pmlr)
+    if [ -z "$VOLUME" ] && [ "$clean" != 1 ]; then
+        echo -e "${RED}Error: for ${DARK_RED}$PROCEEDING${RED}, arg ${DARK_RED}volume${RED} is required!${NC}" && exit 1
+    fi
+    HOST=http://proceedings.mlr.press/
+    ;;
+*)
+    echo -e "${RED}Error: arg ${DARK_RED}proceeding${RED} must be nips|pmlr!${NC}" && exit 1
+    ;;
+esac
+
+# create cache directory
+create -d "$HOME/.cache"
+create -d "$HOME/.cache/paper-dl"
+create -d "$HOME/.cache/paper-dl/$PROCEEDING"
+CACHE="$HOME/.cache/paper-dl/$PROCEEDING"
+
+if [ "$clean" == 1 ]; then
+    if [ -z "$YEAR" ] && [ -z "$VOLUME" ]; then
+        delete -f $CACHE/index.html
+    elif [ -n "$YEAR" ]; then
+        delete -f $CACHE/$YEAR.html
+        delete -f $CACHE/$YEAR.txt
+    elif [ -n "$VOLUME" ]; then
+        delete -f $CACHE/$VOLUME.html
+        delete -f $CACHE/$VOLUME.txt
+    fi
+    exit 1
+fi
+
+# download the index.html
+if [ ! -f $CACHE/index.html ]; then
+    wget -t 0 -q -O $CACHE/index.html $HOST
+fi
+
+# extract the name and url of the queried proceeding
+case $PROCEEDING in
+nips)
+    if [ -n "$YEAR" ]; then # query by year
+        # use proceeding name "Advances in Neural Information Processing Systems * (NIPS *)" as the save directory
+        SAVE_DIR=$(cat $CACHE/index.html | sed -n "s/.*\".\(.*NIPS $YEAR.*\).\/a.*/\1/p")
+    else # query by volume
+        SAVE_DIR=$(cat $CACHE/index.html | sed -n "s/.*\".\(.*Systems $VOLUME .NIPS.*\).\/a.*/\1/p")
+        YEAR=$(cat $CACHE/index.html | sed -n "s/.*-$VOLUME-\(.*\)\".*/\1/p")
+    fi
+    PROCEEDING_URL=$(cat $CACHE/index.html | sed -n "s/.*href=\"\(.*$YEAR\)\".*/\1/p")
+    ;;
+pmlr)
+    SAVE_DIR=$(cat $CACHE/index.html | sed -n "s/.*$VOLUME.*\/a.\(.*\)/\1/p" | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+    PROCEEDING_URL=$(cat $CACHE/index.html | sed -n "s/.*href=\"\(.*\)\".*Volume $VOLUME.*/\1/p")
+    YEAR="$VOLUME" # for pmlr, only VOLUME is required and YEAR is redundant
+    ;;
+jmlr) ;;
+ijcai) ;;
+aaai) ;;
+kdd) ;;
+pami) ;;
+tkde) ;;
+esac
+
+if [ -z "$SAVE_DIR" ]; then
+    echo -e "${RED}Warning: no proceedings meet the query requirements!${NC}" && exit 1
+fi
+
+# cache the queried proceeding page
+if [ ! -f $CACHE/$YEAR.html ] && [ ! -f $CACHE/$YEAR.txt ]; then
+    echo -e "${YELLOW}Caching the queried proceeding page:${NC}"
+    wget -t 0 -q --show-progress -O $CACHE/$YEAR.html $HOST$PROCEEDING_URL
+fi
+
+# extract the content of $YEAR.html and save to $YEAR.txt
+# each line: title@author@url, where  is the separator
+create -f $CACHE/$YEAR.txt
+if [ "$?" == 1 ]; then
+    while read -r line; do
+        case $PROCEEDING in
+        nips)
+            if [[ "$line" =~ '<li><a href="/paper/' ]]; then
+                #title=$(echo $line | perl -pe 's|(">.*?)</a>.*|\1|' | sed -n 's/.*">\(.*\)/\1/p')
+                title=$(echo $line | awk -F '</a>' '{print $1}' | sed -n 's/.*">\(.*\)/\1/p')
+                #url=$(echo $line | perl -pe 's|(">.*?)</a>.*|\1|' | sed -n 's/.*href="\(.*\)".*/\1/p')
+                url=$(echo $line | awk -F '</a>' '{print $1}' | sed -n 's/.*href="\(.*\)">.*/\1/p')
+
+                author=$(echo $(echo $line | awk -F '</a>' '{for(i=2;i<NF;i++) print $i}' | sed -n 's/.*">\(.*\)/\1,/p'))
+                if [ -n "$author" ]; then
+                    author=${author:0:-1}
+                else
+                    author="No Author Info."
+                fi
+
+                echo "$title@$author@$HOST$url" >>$CACHE/$YEAR.txt
+            fi
+            ;;
+        pmlr)
+            if [[ "$line" =~ '"title"' ]]; then
+                title=$(echo $line | sed -n 's/.*title".\(.*\).\/p.*/\1/p')
+            elif [[ "$line" =~ '<span class="authors">' ]]; then
+                flag=1 && author=""
+            elif [[ "$line" =~ '</span>' ]] && [ "$flag" == 1 ]; then
+                author="${author:0:-1}" && flag=0
+            elif [[ "$line" =~ 'Download PDF' ]]; then
+                paper_url=$(echo "$line" | sed -n 's/.*href="\(.*[1-9][1-9][a-z].pdf\)" target.*/\1/p')
+                if [[ "$line" =~ 'Supplementary PDF' ]]; then
+                    supp_url=$(echo "$line" | sed -n 's/.*Download PDF.*href="\(.*-supp.pdf\)" target.*/\1/p')
+                fi
+                echo "$title@$author@$paper_url~$supp_url" >>$CACHE/$YEAR.txt
+            else
+                if [ "$flag" == 1 ]; then
+                    a=$(echo "$line" | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+                    if [ -n "$a" ]; then
+                        author="$author$a "
+                    fi
+                fi
+            fi
+            ;;
+        esac
+    done <$CACHE/$YEAR.html
+fi
+
+# delete -f $CACHE/$YEAR.html
+
+# save the query results into three arrays
+i=0
+while read -r line; do
+    title[$i]=$(echo $line | awk -F '@' '{print $1}')
+    author[$i]=$(echo $line | awk -F '@' '{print $2}')
+    url[$i]=$(echo $line | awk -F '@' '{print $3}')
+
+    if [ -z "$KEYWORD" ] && [ -z "$AUTHOR" ]; then # show all the papers
+        ((i++))
+    elif [ -n "$KEYWORD" ]; then
+        keyword_find=1
+        KEYWORD_ARRAY=(${KEYWORD})
+        for KW in ${KEYWORD_ARRAY[@]}; do
+            kw=${KW,,}
+            if [[ ! "${title[$i],,}" =~ "$kw" ]]; then # if any keyword is not found
+                keyword_find=0
+            fi
+        done
+        if [ "$keyword_find" == 1 ]; then
+            ((i++))
+        fi
+    elif [ -n "$AUTHOR" ] && [[ "${author[$i],,}" =~ "${AUTHOR,,}" ]]; then
+        ((i++))
+    fi
+done <$CACHE/$YEAR.txt
+
+if [ "$i" == 0 ]; then
+    echo -e "${RED}Warning: no papers meet the query requirements!${NC}" && exit 1
+fi
+
+create -d ${PROCEEDING^^}                     # create proceeding directory
+create -d "${PROCEEDING^^}/$SAVE_DIR"         # save directory
+LOCAL_PAPER=$(ls "${PROCEEDING^^}/$SAVE_DIR") # local downloaded paper list
+
+query=$i && j=$i && downloaded=0
+
+# show papers in descending order
+while [ "$i" -gt 0 ]; do
+    echo -e "${MAGENTA}$i${NC} \c"
+    ((i--))
+    case $PROCEEDING in
+    'pmlr')
+        t=$(echo ${title[$i]} | tr '/' '~')
+        ;;
+    'nips')
+        t=($(echo ${url[$i]} | tr '/' ' '))
+        t=${t[-1]%.pdf}
+        ;;
+    esac
+    if [[ "$LOCAL_PAPER" =~ "$t" ]]; then
+        printf "${GRAY}%s ${YELLOW}(Downloaded)${NC}\n" "${title[$i]}"
+        select[$i]=0 # avoid repeated download
+        ((j--)) && ((downloaded++))
+    else
+        select[$i]=1 # default select all papers non downloaded before
+        echo "${title[$i]}"
+    fi
+    echo -e "${CYAN}\033[3m    ${author[$i]}\033[23m${NC}"
+done
+
+if [ "$j" == 0 ]; then
+    echo -e "${RED}==> All papers have been downloaded!${NC}" && exit 1
+else
+    if [ "$downloaded" == 0 ]; then
+        echo -e "${YELLOW}==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all ($query)${NC}"
+    else
+        echo -e "${YELLOW}==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all ($query-$downloaded=$j)${NC}"
+    fi
+    read -p $'\033[33m==> \033[0m' input
+fi
+
+# process the input
 if [ -n "${input// /}" ]; then
-    for k in "${!select_array[@]}"; do
-        select_array[$k]=0
+    for i in "${!select[@]}"; do
+        select[$i]=0
     done
 
     input=($input)
 
-    for value in ${input[@]}; do
-        if [ "$(echo "$value" | awk '{print($0~/^[1-9][0-9]*-[1-9][0-9]*$/)}')" == 1 ]; then
-            i=$(echo "$value" | cut -d '-' -f 1) && j=$(echo "$value" | cut -d '-' -f 2)
-            while [ "$i" -le "$j" ] && [ "$i" -le "$query_num" ]; do
-                select_array[$(($i - 1))]=1 && ((i++))
+    for var in ${input[@]}; do
+        # for input like 2-4, set select[1:3] = 1
+        if [ "$(echo "$var" | awk '{print($0~/^[1-9][0-9]*-[1-9][0-9]*$/)}')" == 1 ]; then
+            i=$(echo "$var" | cut -d '-' -f 1) && j=$(echo "$var" | cut -d '-' -f 2)
+            while [ "$i" -le "$j" ] && [ "$i" -le "$query" ]; do
+                select[$(($i - 1))]=1 && ((i++))
             done
-        elif [ "$(echo "$value" | awk '{print($0~/^[1-9][0-9]*$/)}')" == 1 ]; then
-            if [ "$value" -le "$query_num" ]; then
-                select_array[$(($value - 1))]=1
+        # for input like 2, set select[1] = 1
+        elif [ "$(echo "$var" | awk '{print($0~/^[1-9][0-9]*$/)}')" == 1 ]; then
+            if [ "$var" -le "$query" ]; then
+                select[$(($var - 1))]=1
             fi
         fi
     done
 
-    for value in ${input[@]}; do
-        if [ "$(echo "$value" | awk '{print($0~/^[\^][0-9]*-[1-9][0-9]*$/)}')" == 1 ]; then
-            value=${value:1}
-            i=$(echo "$value" | cut -d '-' -f 1) && j=$(echo "$value" | cut -d '-' -f 2)
+    for var in ${input[@]}; do
+        # for input like ^2-4, set select[0] = 1 and select[4:] = 1
+        if [ "$(echo "$var" | awk '{print($0~/^[\^][0-9]*-[1-9][0-9]*$/)}')" == 1 ]; then
+            var=${var:1}
+            i=$(echo "$var" | cut -d '-' -f 1) && j=$(echo "$var" | cut -d '-' -f 2)
             k=0
-            while [ "$k" -lt "$query_num" ]; do
+            while [ "$k" -lt "$query" ]; do
                 if [ "$k" -lt "$i" ] || [ "$k" -ge "$j" ]; then
-                    select_array[$k]=1
+                    select[$k]=1
                 fi
                 ((k++))
             done
-        elif [ "$(echo "$value" | awk '{print($0~/^[\^][1-9][0-9]*$/)}')" == 1 ]; then
-            value=${value:1}
+        # for input like ^2, set select[0] = 1 and select[2:] = 1
+        elif [ "$(echo "$var" | awk '{print($0~/^[\^][1-9][0-9]*$/)}')" == 1 ]; then
+            var=${var:1}
             k=0
-            while [ "$k" -lt "$query_num" ]; do
-                if [ "$k" != "$(($value - 1))" ]; then
-                    select_array[$k]=1
+            while [ "$k" -lt "$query" ]; do
+                if [ "$k" != "$(($var - 1))" ]; then
+                    select[$k]=1
                 fi
                 ((k++))
             done
         fi
     done
 
-    for value in ${input[@]}; do
-        if [ "$(echo "$value" | awk '{print($0~/^[\^][0-9]*-[1-9][0-9]*$/)}')" == 1 ]; then
-            value=${value:1}
-            i=$(echo "$value" | cut -d '-' -f 1)
-            j=$(echo "$value" | cut -d '-' -f 2)
-            while [ "$i" -le "$j" ] && [ "$i" -le "$query_num" ]; do
-                select_array[$(($i - 1))]=0 && ((i++))
+    for var in ${input[@]}; do
+        # for input like ^2-4, set select[1:3] = 0
+        if [ "$(echo "$var" | awk '{print($0~/^[\^][0-9]*-[1-9][0-9]*$/)}')" == 1 ]; then
+            var=${var:1}
+            i=$(echo "$var" | cut -d '-' -f 1)
+            j=$(echo "$var" | cut -d '-' -f 2)
+            while [ "$i" -le "$j" ] && [ "$i" -le "$query" ]; do
+                select[$(($i - 1))]=0 && ((i++))
             done
-        elif [ "$(echo "$value" | awk '{print($0~/^[\^][1-9][0-9]*$/)}')" == 1 ]; then
-            value=${value:1}
-            if [ "$value" -le "$query_num" ]; then
-                select_array[$(($value - 1))]=0
+        # for input like ^2, set select[1] = 0
+        elif [ "$(echo "$var" | awk '{print($0~/^[\^][1-9][0-9]*$/)}')" == 1 ]; then
+            var=${var:1}
+            if [ "$var" -le "$query" ]; then
+                select[$(($var - 1))]=0
             fi
         fi
     done
 fi
 
 total=0
-for value in ${select_array[@]}; do
-    if [ "$value" == 1 ]; then
-        ((total++))
-    fi
+for var in ${select[@]}; do
+    total=$(($total + $var))
 done
 
+# start download
 if [ "$total" -gt 0 ]; then
-    create d "$proceeding_name" && cd "$proceeding_name"
+    cd "${PROCEEDING^^}/$SAVE_DIR"
     i=0 && j=0
-    while [ "$i" -lt "$query_num" ]; do
-        if [ "${select_array[$i]}" == 1 ]; then
-            title=${title_array[$i]}
+    while [ "$i" -lt "$query" ]; do
+        if [ "${select[$i]}" == 1 ]; then
+            t=${title[$i]}
 
             ((j++))
             awk 'BEGIN{printf "\033[35m\n%d/%d (%.2f%)\033[0m", '$j', '$total', (100 * '$j'/'$total')}'
-            echo -e " $title ${cyan}\033[3m${author_array[$i]}\033[23m${nc}"
+            echo -e " $t ${CYAN}\033[3m${author[$i]}\033[23m${NC}"
 
-            case $1 in
-            'pmlr')
-                title=${title//\//?}
-                create d "$title" && cd "$title"
-
-                pdf_url=$(echo ${url_array[$i]} | sed -n 's/.*href="\(.*[1-9][1-9][a-z].pdf\)" target.*/\1/p')
-                pdf_url_array=(${pdf_url//\// })
-                pdf_name=${pdf_url_array[-1]}
-
-                echo -e "${yellow}Download paper: ${nc}"
-                wget -t 0 -q --show-progress -O "$pdf_name" $pdf_url
-
-                if [[ "${url_array[$i]}" =~ 'Supplementary PDF' ]]; then
-                    supp_url=$(echo "${url_array[$i]}" | sed -n 's/.*Download PDF.*href="\(.*-supp.pdf\)" target.*/\1/p')
-                    supp_url_array=(${supp_url//\// })
-                    supp_name=${supp_url_array[-1]}
-
-                    echo -e "${yellow}Download supplementary: ${nc}"
-                    wget -t 0 -q --show-progress -O "$supp_name" $supp_url
-
-                    gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile="${pdf_name:0:-4}-merge.pdf" "$pdf_name" "$supp_name"
-                fi
-                cd ..
-                ;;
+            case $PROCEEDING in
             'nips')
-                wget -t 0 -q -O "$html_cache/paper.html" "$host${url_array[$i]}"
+                wget -t 0 -q -O "$CACHE/paper.html" "${url[$i]}"
 
-                pdf_url=$(cat "$html_cache/paper.html" | sed -n 's/.*href="\(.*\)".*PDF.*/\1/p')
+                pdf_url=$(cat "$CACHE/paper.html" | sed -n 's/.*href="\(.*\)".*PDF.*/\1/p')
                 pdf_url_array=(${pdf_url//\// })
-                pdf_name=${pdf_url_array[-1]}
+                pdf_name=${pdf_url_array[-1]} # pdf_name is necessary for the subsequent merge step
 
-                title=${pdf_name:0:-4}
-                create d "$title" && cd "$title" # 只能用截取pdf_name创建文件夹 正常标题有的用了latex符号 都是非法字符
+                t=${pdf_name%.pdf}
+                create -d "$t" # use pdf_name to create save directory since the title often contain latex character
+                cd "$t"
 
-                echo -e "${yellow}Download paper: ${nc}"
-                wget -t 0 -q --show-progress -O "$pdf_name" $host$pdf_url
+                echo -e "${YELLOW}Download paper: ${NC}"
+                wget -t 0 -q --show-progress -O "$pdf_name" $HOST$pdf_url
 
-                bib_url=$(cat "$html_cache/paper.html" | sed -n 's/.*href="\(.*\)".*BibTeX.*/\1/p')
-                echo -e "${yellow}Download bib: ${nc}"
-                wget -t 0 -q --show-progress -P . $host$bib_url
+                bib_url=$(cat "$CACHE/paper.html" | sed -n 's/.*href="\(.*\)".*BibTeX.*/\1/p')
+                echo -e "${YELLOW}Download bib: ${NC}"
+                wget -t 0 -q --show-progress -P . $HOST$bib_url
 
-                supplemental_url=$(cat "$html_cache/paper.html" | sed -n 's/.*href="\(.*\)".*Supplemental.*/\1/p')
+                supplemental_url=$(cat "$CACHE/paper.html" | sed -n 's/.*href="\(.*\)".*Supplemental.*/\1/p')
                 if [ -n "$supplemental_url" ]; then
-                    echo -e "${yellow}Download supplemental: ${nc}"
-                    wget -t 0 -q --show-progress -P . $host$supplemental_url
+                    echo -e "${YELLOW}Download supplemental: ${NC}"
+                    wget -t 0 -q --show-progress -P . $HOST$supplemental_url
 
                     supplemental=$(find . -maxdepth 1 -regextype posix-extended -iregex '.*\.(zip)')
                     if [ -n "$supplemental" ]; then
-                        create d supp
+                        create -d supp
                         unzip -q "$supplemental" -d supp
-                        merge_command="gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile='${pdf_name:0:-4}-merge.pdf' '$pdf_name'"
+                        merge_command="gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile='${pdf_name%.pdf}-merge.pdf' '$pdf_name'"
+                        flag=0
                         for line in $(find supp -maxdepth 1 -regextype posix-extended -iregex '.*\.(pdf)' | tr ' ' '\?'); do
-                            merge_command="$merge_command '$line'"
+                            if [ -n "$line" ]; then
+                                merge_command="$merge_command '$line'"
+                                flag=1
+                            fi
                         done
-                        merge_command=$(echo "$merge_command" | tr '\?' ' ')
-                        eval "$merge_command"
-                        delete d supp
+                        if [ "$flag" == 1 ]; then
+                            merge_command=$(echo "$merge_command" | tr '\?' ' ')
+                            eval "$merge_command"
+                        fi
+                        delete -d supp
                     else
                         echo "no supplemental"
                     fi
                 fi
 
-                review_url=$(cat "$html_cache/paper.html" | sed -n 's/.*href="\/\/\(.*\)".*Reviews.*/\1/p')
+                review_url=$(cat "$CACHE/paper.html" | sed -n 's/.*href="\/\/\(.*\)".*Reviews.*/\1/p')
                 if [ -n "$review_url" ]; then
-                    echo -e "${yellow}Download review: ${nc}"
+                    echo -e "${YELLOW}Download review: ${NC}"
                     wget -t 0 -q --show-progress -P . $review_url
                 fi
 
-                delete f "$html_cache/paper.html"
+                delete -f "$CACHE/paper.html"
+                cd ..
+                ;;
+            'pmlr')
+                t=${t//\//~}
+                create -d "$t"
+                cd "$t"
+
+                pdf_url=$(echo ${url[$i]} | cut -d '~' -f 1)
+                pdf_url_array=(${pdf_url//\// })
+                pdf_name=${pdf_url_array[-1]}
+
+                echo -e "${YELLOW}Download paper: ${NC}"
+                wget -t 0 -q --show-progress -O "$pdf_name" $pdf_url
+
+                supp_url=$(echo ${url[$i]} | cut -d '~' -f 2)
+                if [ -n "$supp_url" ]; then
+                    supp_url_array=(${supp_url//\// })
+                    supp_name=${supp_url_array[-1]}
+
+                    echo -e "${YELLOW}Download supplementary: ${NC}"
+                    wget -t 0 -q --show-progress -O "$supp_name" $supp_url
+
+                    gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile="${pdf_name%.pdf}-merge.pdf" "$pdf_name" "$supp_name"
+                fi
                 cd ..
                 ;;
             esac
@@ -385,5 +488,5 @@ if [ "$total" -gt 0 ]; then
         ((i++))
     done
 else
-    echo -e "${red}Warning: there is nothing to do!${nc}"
+    echo -e "${RED}Warning: there is nothing to do!${NC}"
 fi
