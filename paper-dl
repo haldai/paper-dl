@@ -92,7 +92,7 @@ for var in "$@"; do
             clean=1
             ;;
         '-V' | '--version')
-            echo -e "paper-dl v${DARK_RED}1.2.1.191208${NC} -- ${YELLOW}murongxixi${NC}@\033[4;1;34mhttps://github.com/murongxixi/paper-dl${NC}" && exit 1
+            echo -e "paper-dl v${DARK_RED}1.2.2.191208${NC} -- ${YELLOW}murongxixi${NC}@\033[4;1;34mhttps://github.com/murongxixi/paper-dl${NC}" && exit 1
             ;;
         '-p' | '--proceeding')
             flag=1 && i=0
