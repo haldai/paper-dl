@@ -622,7 +622,7 @@ if [ "$total" -gt 0 ]; then
                     supp_url_array=(${supp_url//\// })
                     supp_name=${supp_url_array[-1]}
 
-                    echo -e "${YELLOW}::${NC} Download supplementary"
+                    echo -e "${YELLOW}::${NC} Download supplemental"
                     wget -t 0 -q --show-progress -O "$supp_name" $supp_url
 
                     gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile="${pdf_name%.pdf}-merge.pdf" "$pdf_name" "$supp_name"
