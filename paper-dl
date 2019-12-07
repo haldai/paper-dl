@@ -75,7 +75,7 @@ for var in "$@"; do
         case $var in
         '-h' | '--help')
             echo -e "Usage:"
-            echo -e "    paper-dl <operation>, details can be found at \033[4;1;37mhttps://github.com/murongxixi/paper-dl${NC}\n"
+            echo -e "    paper-dl <operation>     details can be found at \033[4;1;37mhttps://github.com/murongxixi/paper-dl${NC}\n"
             echo -e "Operations:"
             echo -e "    paper-dl {-h --help}"
             echo -e "    paper-dl {-c --clean}    remove old or corrupt cache files"
