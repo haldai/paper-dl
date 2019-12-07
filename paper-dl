@@ -78,17 +78,17 @@ for var in "$@"; do
             echo -e "    paper-dl <operation>     details can be found at \033[4;1;37mhttps://github.com/murongxixi/paper-dl${NC}\n"
             echo -e "Operations:"
             echo -e "    paper-dl {-h --help}"
-            echo -e "    paper-dl {-c --clean}    remove old or corrupt cache files"
+            echo -e "    paper-dl {-c --clean}    remove out-of-date or corrupt cache files"
             echo -e "    paper-dl {-V --version}\n"
             echo -e "Configuration options:"
-            echo -e "    -p --proceeding          currently support: nips|pmlr                     (required)"
+            echo -e "    -p --proceeding          currently support: nips|pmlr|jmlr                (required)"
             echo -e "    -v --volume              query by volume                                  (semi-required)"
             echo -e "    -y --year                query by year, exclusive with volume             (semi-required)"
             echo -e "    -k --keyword             query by keyword                                 (optional)"
             echo -e "    -a --author              query by author, exclusive with keyword          (optional)"
             exit 1
             ;;
-        '-c' | '--clean') # remove old or corrupt cache files
+        '-c' | '--clean') # remove out-of-date or corrupt cache files
             clean=1
             ;;
         '-V' | '--version')
