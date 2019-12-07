@@ -59,7 +59,7 @@ When you query some proceeding for the first time, it will take a few moment to 
 paper-dl -p proceeding [-v volume | -y year] -c
 ```
 
-If volume and year are both not given, it will delete the index.html, otherwise the corresponding proceeding page will be removed.
+If volume and year are both not given, it will delete the index.html, e.g., http://proceedings.mlr.press/index.html, otherwise the corresponding proceeding page will be removed, e.g., http://proceedings.mlr.press/v97/.
 
 ## Examples
 
