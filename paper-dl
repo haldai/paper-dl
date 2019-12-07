@@ -78,17 +78,17 @@ for var in "$@"; do
             echo -e "    paper-dl <operation>, details can be found at \033[4;1;37mhttps://github.com/murongxixi/paper-dl${NC}\n"
             echo -e "Operations:"
             echo -e "    paper-dl {-h --help}"
-            echo -e "    paper-dl {-c --clean}"
+            echo -e "    paper-dl {-c --clean}    remove old or corrupt cache files"
             echo -e "    paper-dl {-V --version}\n"
             echo -e "Configuration options:"
-            echo -e "    -p --proceeding       currently support: nips|pmlr                 (required)"
-            echo -e "    -v --volume           query by volume                              (semi-required)"
-            echo -e "    -y --year             query by year, exclusive with volume         (semi-required)"
-            echo -e "    -k --keyword          query by keyword                             (optional)"
-            echo -e "    -a --author           query by author, exclusive with keyword      (optional)"
+            echo -e "    -p --proceeding          currently support: nips|pmlr                     (required)"
+            echo -e "    -v --volume              query by volume                                  (semi-required)"
+            echo -e "    -y --year                query by year, exclusive with volume             (semi-required)"
+            echo -e "    -k --keyword             query by keyword                                 (optional)"
+            echo -e "    -a --author              query by author, exclusive with keyword          (optional)"
             exit 1
             ;;
-        '-c' | '--clean') # remove old or corrupt html in cache directory
+        '-c' | '--clean') # remove old or corrupt cache files
             clean=1
             ;;
         '-V' | '--version')
@@ -134,6 +134,12 @@ pmlr)
     fi
     HOST=http://proceedings.mlr.press/
     ;;
+jmlr)
+    if [ -z "$VOLUME" ] && [ "$clean" != 1 ]; then
+        echo -e "${RED}Error: for ${DARK_RED}$PROCEEDING${RED}, arg ${DARK_RED}volume${RED} is required!${NC}" && exit 1
+    fi
+    HOST=http://www.jmlr.org/papers/
+    ;;
 *)
     echo -e "${RED}Error: arg ${DARK_RED}proceeding${RED} must be nips|pmlr!${NC}" && exit 1
     ;;
@@ -158,16 +164,17 @@ if [ "$clean" == 1 ]; then
     exit 1
 fi
 
-# download the index.html
+# cache the index.html
 if [ ! -f $CACHE/index.html ]; then
-    wget -t 0 -q -O $CACHE/index.html $HOST
+    echo -e "${YELLOW}::${NC} Cache the index page"
+    wget -t 0 -q --show-progress -O $CACHE/index.html $HOST
 fi
 
 # extract the name and url of the queried proceeding
 case $PROCEEDING in
 nips)
     if [ -n "$YEAR" ]; then # query by year
-        # use proceeding name "Advances in Neural Information Processing Systems * (NIPS *)" as the save directory
+        # use the proceeding name "Advances in Neural Information Processing Systems * (NIPS *)" as the save directory
         SAVE_DIR=$(cat $CACHE/index.html | sed -n "s/.*\".\(.*NIPS $YEAR.*\).\/a.*/\1/p")
     else # query by volume
         SAVE_DIR=$(cat $CACHE/index.html | sed -n "s/.*\".\(.*Systems $VOLUME .NIPS.*\).\/a.*/\1/p")
@@ -176,11 +183,21 @@ nips)
     PROCEEDING_URL=$(cat $CACHE/index.html | sed -n "s/.*href=\"\(.*$YEAR\)\".*/\1/p")
     ;;
 pmlr)
-    SAVE_DIR=$(cat $CACHE/index.html | sed -n "s/.*$VOLUME.*\/a.\(.*\)/\1/p" | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+    SAVE_DIR=$(cat $CACHE/index.html | sed -n "s/.*Volume $VOLUME.\/b..\/a.\(.*\)/\1/p" | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
     PROCEEDING_URL=$(cat $CACHE/index.html | sed -n "s/.*href=\"\(.*\)\".*Volume $VOLUME.*/\1/p")
     YEAR="$VOLUME" # for pmlr, only VOLUME is required and YEAR is redundant
     ;;
-jmlr) ;;
+jmlr)
+    if [ "$(echo "$VOLUME" | awk '{print($0~/^[1-9][0-9]*$/)}')" == 1 ]; then
+        SAVE_DIR=$(cat $CACHE/index.html | sed -n "s/.*volume\".\(.* $VOLUME\).\/font.*/\1/p" | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+        PROCEEDING_URL=$(cat $CACHE/index.html | sed -n "s/.*href=\"\(.*\)\"..font class=.volume..Volume $VOLUME..font.*/\1/p")
+    else
+        SAVE_DIR=$(cat $CACHE/index.html | sed -n "s/.*volume\".\(.*$VOLUME\).\/font.*/\1/p" | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+        PROCEEDING_URL=$(cat $CACHE/index.html | sed -n "s/.*href=\"\(.*\)\"..font class=.volume..$VOLUME..font.*/\1/p")
+    fi
+    PROCEEDING_URL=${PROCEEDING_URL//\/papers\//}
+    YEAR="$VOLUME" # for jmlr, only VOLUME is required and YEAR is redundant
+    ;;
 ijcai) ;;
 aaai) ;;
 kdd) ;;
@@ -188,21 +205,73 @@ pami) ;;
 tkde) ;;
 esac
 
-if [ -z "$SAVE_DIR" ]; then
+if [ -z "$PROCEEDING_URL" ]; then
     echo -e "${RED}Warning: no proceedings meet the query requirements!${NC}" && exit 1
 fi
 
 # cache the queried proceeding page
-if [ ! -f $CACHE/$YEAR.html ] && [ ! -f $CACHE/$YEAR.txt ]; then
-    echo -e "${YELLOW}Caching the queried proceeding page:${NC}"
-    wget -t 0 -q --show-progress -O $CACHE/$YEAR.html $HOST$PROCEEDING_URL
+if [ ! -f "$CACHE/$YEAR.html" ] && [ ! -f "$CACHE/$YEAR.txt" ]; then
+    echo -e "${YELLOW}::${NC} Cache the proceeding page"
+    wget -t 0 -q --show-progress -O "$CACHE/$YEAR.html" $HOST$PROCEEDING_URL
 fi
 
 # extract the content of $YEAR.html and save to $YEAR.txt
-# each line: title@author@url, where  is the separator
-create -f $CACHE/$YEAR.txt
+# each line: title[][]author[][]url, where [][] is the separator
+create -f "$CACHE/$YEAR.txt"
 if [ "$?" == 1 ]; then
     while read -r line; do
+        line=${line//&#225;/á}
+        line=${line//&#233;/é}
+        line=${line//&#x011B;/ě}
+        line=${line//&#246;/ö}
+        line=${line//&#322;/ł}
+        line=${line//&#227;/ã}
+        line=${line//&#231;/ç}
+        line=${line//&#269;/č}
+        line=${line//&#382;/ž}
+        line=${line//&#252;/ü}
+        line=${line//&#228;/ä}
+        line=${line//&ccedil;/ç}
+        line=${line//&iacute;/í}
+        line=${line//&uuml;/ü}
+        line=${line//&auml;/ä}
+        line=${line//&auml/ä}
+        line=${line//&aacute;/á}
+        line=${line//&eacute;/é}
+        line=${line//&egrave;/è}
+        line=${line//&ouml;/ö}
+        line=${line//&#353;/š}
+        line=${line//&#242;/ò}
+        line=${line//&#241;/ñ}
+        line=${line//&#305;/ı}
+        line=${line//&#253;/ý}
+        line=${line//&#237;/í}
+        line=${line//&#250;/ú}
+        line=${line//&#235;/ë}
+        line=${line//&#244;/ô}
+        line=${line//&#239;/ï}
+        line=${line//&#243;/ó}
+        line=${line//&#337;/ő}
+        line=${line//&#283;/ě}
+        line=${line//&#779;/ő}
+        line=${line//&#x00E9;/é}
+        line=${line//&Eacute;/É}
+        line=${line//&#223;/ß}
+        line=${line//&#966;/φ}
+        line=${line//&#946;/β}
+        line=${line//&#263;/ć}
+        line=${line//&minus;/−}
+        line=${line//&#259;/ă}
+        line=${line//&#232;/è}
+        line=${line//&#193;/Á}
+        line=${line//&#201;/É}
+        line=${line//&#350;/Ş}
+        line=${line//&#214;/Ö}
+        line=${line//&#238;/î}
+        line=${line//&#381;/Ž}
+        line=${line//&#39;/\'}
+        line=${line//&#34;/\"}
+
         case $PROCEEDING in
         nips)
             if [[ "$line" =~ '<li><a href="/paper/' ]]; then
@@ -218,7 +287,7 @@ if [ "$?" == 1 ]; then
                     author="No Author Info."
                 fi
 
-                echo "$title@$author@$HOST$url" >>$CACHE/$YEAR.txt
+                echo "$title  $author  $HOST$url" >>$CACHE/$YEAR.txt
             fi
             ;;
         pmlr)
@@ -232,8 +301,11 @@ if [ "$?" == 1 ]; then
                 paper_url=$(echo "$line" | sed -n 's/.*href="\(.*[1-9][1-9][a-z].pdf\)" target.*/\1/p')
                 if [[ "$line" =~ 'Supplementary PDF' ]]; then
                     supp_url=$(echo "$line" | sed -n 's/.*Download PDF.*href="\(.*-supp.pdf\)" target.*/\1/p')
+                    echo "$title  $author  $paper_url,$supp_url" >>$CACHE/$YEAR.txt
+                else
+                    echo "$title  $author  $paper_url" >>$CACHE/$YEAR.txt
                 fi
-                echo "$title@$author@$paper_url~$supp_url" >>$CACHE/$YEAR.txt
+
             else
                 if [ "$flag" == 1 ]; then
                     a=$(echo "$line" | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
@@ -243,37 +315,111 @@ if [ "$?" == 1 ]; then
                 fi
             fi
             ;;
-        esac
-    done <$CACHE/$YEAR.html
-fi
+        jmlr)
+            if [[ "$line" =~ '<dt>' ]]; then
+                title_start=1
+                title=$(echo $line | sed -n 's/<dt>\(.*\)/\1/p' | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+                continue
+            elif [[ "$line" == '<dd>' ]] || [[ "$line" =~ 'img src=' ]]; then
+                title=${title//&#160;/}
+                title=${title//<\/dt>/}
+                if [[ "${title}" =~ 'href' ]]; then
+                    title=$(echo "$title" | sed -n 's/\(.*\).a .*href.*/\1/p' | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+                fi
+                title_start=0
+                continue
+            elif [[ "$line" =~ '<dd><b><i>' ]] || [ "${line:0:3}" == '<i>' ]; then
+                if [ "$title_start" == 1 ]; then
+                    title=${title//&#160;/}
+                    title=${title//<\/dt>/}
+                    if [[ "${title}" =~ 'href' ]]; then
+                        title=$(echo "$title" | sed -n 's/\(.*\).a .*href.*/\1/p' | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+                    fi
+                    title_start=0
+                fi
 
-# delete -f $CACHE/$YEAR.html
+                if [[ "$line" =~ '</i></b>' ]]; then # author in one line
+                    author=$(echo $line | sed -n 's/.*<i>\(.*\)<\/i><\/b>.*/\1/p' | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+                elif [[ "$line" =~ '</b></i>' ]]; then # author in one line
+                    author=$(echo $line | sed -n 's/.*<i>\(.*\)<\/b><\/i>.*/\1/p' | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+                else
+                    author_start=1
+                    author=$(echo $line | sed -n 's/.*<i>\(.*\)/\1/p' | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+                fi
+                continue
+            elif [[ "$line" =~ '</i></b>' ]]; then
+                author="$author "$(echo $line | sed -n 's/\(.*\)<\/i><\/b>.*/\1/p')
+                author=$(echo "$author" | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+                author_start=0
+                continue
+            elif [[ "$line" =~ 'abs</' ]] || [[ "$line" =~ '[abs]</' ]]; then
+                if [[ "$line" =~ '.pdf' ]]; then
+                    paper_url=$(echo $line | sed -n "s/.*a target=['\"]*_blank['\"]* href=['\"]*\(.*pdf\)['\"]*>pdf<\/a>].*/\1/p")
+                    if [ -z "$paper_url" ]; then
+                        paper_url=$(echo $line | sed -n "s/.*a href=['\"]*\(.*pdf\)['\"]* target=['\"]*_blank['\"]*>pdf<\/a>].*/\1/p")
+                    fi
+                    if [[ ! "$paper_url" =~ "http" ]]; then
+                        paper_url=$HOST${paper_url//\/papers\//}
+                    fi
+                    bib_url=$(echo $line | sed -n "s/.*a href=['\"]*\(.*bib\)['\"]*>bib<\/a>.*/\1/p")
+                    if [ -n "$bib_url" ]; then
+                        if [[ ! "$bib_url" =~ "http" ]]; then
+                            bib_url=${bib_url//\/papers\//}
+                            echo -e "$title  $author  $paper_url,$HOST$bib_url" >>"$CACHE/$YEAR.txt"
+                        else
+                            echo -e "$title  $author  $paper_url,$bib_url" >>"$CACHE/$YEAR.txt"
+                        fi
+                    else
+                        echo -e "$title  $author  $paper_url" >>"$CACHE/$YEAR.txt"
+                    fi
+                else
+                    url_start=1
+                fi
+                continue
+            fi
+
+            if [ "$title_start" == 1 ] && [[ ! "$line" =~ '<i>' ]]; then
+                title="$title "$(echo $line | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+            elif [ "$author_start" == 1 ] && [[ ! "$line" =~ '</i></b>' ]]; then
+                author="$author "$(echo $line | sed -e 's/^[ ]*//g' | sed -e 's/[ ]*$//g')
+            elif [ "$url_start" == 1 ]; then
+                if [[ "$line" =~ "http" && "$line" =~ ".pdf" ]]; then
+                    paper_url=$(echo "$line" | sed -n 's/.*\(http.*\.pdf\).*/\1/p')
+                    echo -e "$title  $author  $paper_url" >>"$CACHE/$YEAR.txt"
+                    url_start=0
+                fi
+            fi
+            ;;
+        esac
+
+    done <"$CACHE/$YEAR.html"
+fi
 
 # save the query results into three arrays
 i=0
 while read -r line; do
-    title[$i]=$(echo $line | awk -F '@' '{print $1}')
-    author[$i]=$(echo $line | awk -F '@' '{print $2}')
-    url[$i]=$(echo $line | awk -F '@' '{print $3}')
+    title[$i]=$(echo "$line" | awk -F '  ' '{print $1}')
+    author[$i]=$(echo "$line" | awk -F '  ' '{print $2}')
+    url[$i]=$(echo "$line" | awk -F '  ' '{print $3}')
 
     if [ -z "$KEYWORD" ] && [ -z "$AUTHOR" ]; then # show all the papers
         ((i++))
-    elif [ -n "$KEYWORD" ]; then
+    elif [ -n "$KEYWORD" ]; then # query by keyword
         keyword_find=1
         KEYWORD_ARRAY=(${KEYWORD})
         for KW in ${KEYWORD_ARRAY[@]}; do
             kw=${KW,,}
-            if [[ ! "${title[$i],,}" =~ "$kw" ]]; then # if any keyword is not found
+            if [[ ! "${title[$i],,}" =~ "$kw" ]]; then # if some keyword not found
                 keyword_find=0
             fi
         done
         if [ "$keyword_find" == 1 ]; then
             ((i++))
         fi
-    elif [ -n "$AUTHOR" ] && [[ "${author[$i],,}" =~ "${AUTHOR,,}" ]]; then
+    elif [ -n "$AUTHOR" ] && [[ "${author[$i],,}" =~ "${AUTHOR,,}" ]]; then # query by author
         ((i++))
     fi
-done <$CACHE/$YEAR.txt
+done <"$CACHE/$YEAR.txt"
 
 if [ "$i" == 0 ]; then
     echo -e "${RED}Warning: no papers meet the query requirements!${NC}" && exit 1
@@ -282,7 +428,6 @@ fi
 create -d ${PROCEEDING^^}                     # create proceeding directory
 create -d "${PROCEEDING^^}/$SAVE_DIR"         # save directory
 LOCAL_PAPER=$(ls "${PROCEEDING^^}/$SAVE_DIR") # local downloaded paper list
-
 query=$i && j=$i && downloaded=0
 
 # show papers in descending order
@@ -290,12 +435,15 @@ while [ "$i" -gt 0 ]; do
     echo -e "${MAGENTA}$i${NC} \c"
     ((i--))
     case $PROCEEDING in
-    'pmlr')
-        t=$(echo ${title[$i]} | tr '/' '~')
-        ;;
     'nips')
         t=($(echo ${url[$i]} | tr '/' ' '))
         t=${t[-1]%.pdf}
+        ;;
+    'pmlr')
+        t=$(echo ${title[$i]} | tr '/' '?')
+        ;;
+    'jmlr')
+        t=$(echo ${title[$i]} | tr '/' '?')
         ;;
     esac
     if [[ "$LOCAL_PAPER" =~ "$t" ]]; then
@@ -416,16 +564,16 @@ if [ "$total" -gt 0 ]; then
                 create -d "$t" # use pdf_name to create save directory since the title often contain latex character
                 cd "$t"
 
-                echo -e "${YELLOW}Download paper: ${NC}"
+                echo -e "${YELLOW}::${NC} Download paper"
                 wget -t 0 -q --show-progress -O "$pdf_name" $HOST$pdf_url
 
                 bib_url=$(cat "$CACHE/paper.html" | sed -n 's/.*href="\(.*\)".*BibTeX.*/\1/p')
-                echo -e "${YELLOW}Download bib: ${NC}"
+                echo -e "${YELLOW}::${NC} Download bib"
                 wget -t 0 -q --show-progress -P . $HOST$bib_url
 
                 supplemental_url=$(cat "$CACHE/paper.html" | sed -n 's/.*href="\(.*\)".*Supplemental.*/\1/p')
                 if [ -n "$supplemental_url" ]; then
-                    echo -e "${YELLOW}Download supplemental: ${NC}"
+                    echo -e "${YELLOW}::${NC} Download supplemental"
                     wget -t 0 -q --show-progress -P . $HOST$supplemental_url
 
                     supplemental=$(find . -maxdepth 1 -regextype posix-extended -iregex '.*\.(zip)')
@@ -452,7 +600,7 @@ if [ "$total" -gt 0 ]; then
 
                 review_url=$(cat "$CACHE/paper.html" | sed -n 's/.*href="\/\/\(.*\)".*Reviews.*/\1/p')
                 if [ -n "$review_url" ]; then
-                    echo -e "${YELLOW}Download review: ${NC}"
+                    echo -e "${YELLOW}::${NC} Download review"
                     wget -t 0 -q --show-progress -P . $review_url
                 fi
 
@@ -460,26 +608,45 @@ if [ "$total" -gt 0 ]; then
                 cd ..
                 ;;
             'pmlr')
-                t=${t//\//~}
+                t=${t//\//?}
                 create -d "$t"
                 cd "$t"
 
-                pdf_url=$(echo ${url[$i]} | cut -d '~' -f 1)
+                pdf_url=$(echo ${url[$i]} | awk -F ',' '{print $1}')
                 pdf_url_array=(${pdf_url//\// })
                 pdf_name=${pdf_url_array[-1]}
 
-                echo -e "${YELLOW}Download paper: ${NC}"
+                echo -e "${YELLOW}::${NC} Download paper"
                 wget -t 0 -q --show-progress -O "$pdf_name" $pdf_url
 
-                supp_url=$(echo ${url[$i]} | cut -d '~' -f 2)
+                supp_url=$(echo ${url[$i]} | awk -F ',' '{print $2}')
                 if [ -n "$supp_url" ]; then
                     supp_url_array=(${supp_url//\// })
                     supp_name=${supp_url_array[-1]}
 
-                    echo -e "${YELLOW}Download supplementary: ${NC}"
+                    echo -e "${YELLOW}::${NC} Download supplementary"
                     wget -t 0 -q --show-progress -O "$supp_name" $supp_url
 
                     gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile="${pdf_name%.pdf}-merge.pdf" "$pdf_name" "$supp_name"
+                fi
+                cd ..
+                ;;
+            'jmlr')
+                t=${t//\//?}
+                create -d "$t"
+                cd "$t"
+
+                pdf_url=$(echo "${url[$i]}" | awk -F ',' '{print $1}')
+                pdf_url_array=(${pdf_url//\// })
+                pdf_name=${pdf_url_array[-1]}
+
+                echo -e "${YELLOW}::${NC} Download paper"
+                wget -t 0 -q --show-progress -O "$pdf_name" $pdf_url
+
+                bib_url=$(echo "${url[$i]}" | awk -F ',' '{print $2}')
+                if [ -n "$bib_url" ]; then
+                    echo -e "${YELLOW}::${NC} Download bib"
+                    wget -t 0 -q --show-progress -P . $bib_url
                 fi
                 cd ..
                 ;;
