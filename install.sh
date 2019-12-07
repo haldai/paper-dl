@@ -1,1 +1,1 @@
-sudo cp ./paper-dl /usr/local/bin/
+mkdir -p ~/.local/bin && ln -s ./paper-dl ~/.local/bin/paper-dl

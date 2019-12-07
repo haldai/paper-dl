@@ -1,1 +1,1 @@
-sudo rm /usr/local/bin/paper-dl
+rm ~/.local/bin/paper-dl
