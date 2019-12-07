@@ -104,7 +104,7 @@ You have multiple choosing manners
     Alexander Mathiasen, Kasper Green Larsen, Allan Grønlund
 1 Fast and Flexible Inference of Joint Distributions from their Marginals
     Charlie Frogner, Tomaso Poggio
-==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (5)  # ^ is the not operator, i.e., ^a means not choosing a
+==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (5)
 ==> 2 4-5
 
 1/3 (33.33%) Optimal Minimal Margin Maximization with Boosting Alexander Mathiasen, Kasper Green Larsen, Allan Grønlund
