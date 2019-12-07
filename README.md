@@ -4,7 +4,7 @@ Currently supported websites are
 - PMLR：http://proceedings.mlr.press/
 - JMLR：http://www.jmlr.org/papers/
 
-In the future, we will consider supporting AAAI, IJCAI, KDD, AIJ, TKDE and PAMI.
+In the future, we will consider supporting AAAI, IJCAI, KDD, etc.
 
 ## Dependencies
 
