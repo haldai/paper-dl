@@ -49,7 +49,7 @@ paper-dl -p proceeding (-v volume | -y year) -k "keyword1 keyword2 ..."
 paper-dl -p proceeding (-v volume | -y year) -a "author name"
 ```
 
-These two options are mutually exclusive. If none of them given, it will show the whole proceeding.
+These two options are mutually exclusive. If neither of them is given, it will show the whole proceeding.
 
 - Delete out-of-date or corrupt cache files
 
