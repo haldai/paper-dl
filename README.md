@@ -117,7 +117,7 @@ mathiasen19a.pdf       100%[+++++++++=================>]   1.38M  4.08KB/s  用�
 :: Download paper
 rajput19a.pdf            5%[>                          ]  38.55K  --.-KB/s  用时 16m 3s
 rajput19a.pdf          100%[+=========================>] 700.19K  3.60KB/s  用时 1m 52s
-:: Download supplementary
+:: Download supplemental
 rajput19a-supp.pdf      31%[=======>                   ] 242.97K  3.56KB/s  用时 1m 45s
 rajput19a-supp.pdf     100%[++++++++==================>] 777.58K  5.22KB/s  用时 91s
 
@@ -128,7 +128,7 @@ wu19c.pdf               83%[+++++++++++++++======>     ] 287.05K  --.-KB/s  用�
 wu19c.pdf              100%[++++++++++++++++++++++====>] 343.12K  1.01KB/s  用时 48s
 ```
 
-When the connection is broken, wget can resume the download.
+When the connection is broken, wget can resume the download. Supplemental material will be merged with the main paper.
 
 Previous downloaded papers are highlighted:
 
