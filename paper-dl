@@ -449,7 +449,7 @@ while [ "$i" -gt 0 ]; do
         select[$i]=0 # avoid repeated download
         ((j--)) && ((downloaded++))
     else
-        select[$i]=1 # default select all papers non downloaded before
+        select[$i]=1 # default select all papers not downloaded before
         echo "${title[$i]}"
     fi
     echo -e "${CYAN}\033[3m    ${author[$i]}\033[23m${NC}"
