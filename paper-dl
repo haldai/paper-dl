@@ -141,7 +141,7 @@ jmlr)
     HOST=http://www.jmlr.org/papers/
     ;;
 *)
-    echo -e "${RED}Error: arg ${DARK_RED}proceeding${RED} must be nips|pmlr!${NC}" && exit 1
+    echo -e "${RED}Error: arg ${DARK_RED}proceeding${RED} must be nips|pmlr|jmlr!${NC}" && exit 1
     ;;
 esac
 
