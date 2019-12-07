@@ -53,13 +53,13 @@ These two options are mutually exclusive. If neither of them is given, it will s
 
 - Delete out-of-date or corrupt cache files
 
-If some proceeding is queried for the first time, it will take a few moment to cache the html files. If they are out-of-date due to the update on server or corrupted when downlod being interrupted, you can delete them by `-c` option:
+When you query some proceeding for the first time, it will take a few moment to cache the html files to speed up the subsequent queries. If these files are out-of-date due to the update on server or corrupted when downlod being interrupted, you can delete them by `-c` option:
 
 ```shell
 paper-dl -p proceeding [-v volume | -y year] -c
 ```
 
-If both volume and year not given, it will delete the index.html, otherwise the corresponding proceeding page will be removed.
+If volume and year are both not given, it will delete the index.html, otherwise the corresponding proceeding page will be removed.
 
 ## Examples
 
