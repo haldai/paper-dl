@@ -17,7 +17,7 @@ In the future, we will consider supporting AAAI, IJCAI, KDD, etc.
 ```shell
 git clone https://github.com/murongxixi/paper-dl.git
 cd paper-dl
-sudo ./install.sh "path"  # default /usr/local/bin/
+sudo ./install.sh  # /usr/local/bin/
 ```
 
 ## Usage
