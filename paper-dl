@@ -92,7 +92,7 @@ for var in "$@"; do
             clean=1
             ;;
         '-V' | '--version')
-            echo -e "paper-dl v${DARK_RED}1.1.1.191206${NC} -- ${YELLOW}murongxixi${NC}@\033[4;1;34mhttps://github.com/murongxixi/paper-dl${NC}" && exit 1
+            echo -e "paper-dl v${DARK_RED}1.2.1.191207${NC} -- ${YELLOW}murongxixi${NC}@\033[4;1;34mhttps://github.com/murongxixi/paper-dl${NC}" && exit 1
             ;;
         '-p' | '--proceeding')
             flag=1 && i=0
@@ -201,8 +201,9 @@ jmlr)
 ijcai) ;;
 aaai) ;;
 kdd) ;;
-pami) ;;
+aij) ;;
 tkde) ;;
+pami) ;;
 esac
 
 if [ -z "$PROCEEDING_URL" ]; then
@@ -287,7 +288,7 @@ if [ "$?" == 1 ]; then
                     author="No Author Info."
                 fi
 
-                echo "$title  $author  $HOST$url" >>$CACHE/$YEAR.txt
+                echo "$title  $author  $HOST$url" >>"$CACHE/$YEAR.txt"
             fi
             ;;
         pmlr)
@@ -301,9 +302,9 @@ if [ "$?" == 1 ]; then
                 paper_url=$(echo "$line" | sed -n 's/.*href="\(.*[1-9][1-9][a-z].pdf\)" target.*/\1/p')
                 if [[ "$line" =~ 'Supplementary PDF' ]]; then
                     supp_url=$(echo "$line" | sed -n 's/.*Download PDF.*href="\(.*-supp.pdf\)" target.*/\1/p')
-                    echo "$title  $author  $paper_url,$supp_url" >>$CACHE/$YEAR.txt
+                    echo "$title  $author  $paper_url,$supp_url" >>"$CACHE/$YEAR.txt"
                 else
-                    echo "$title  $author  $paper_url" >>$CACHE/$YEAR.txt
+                    echo "$title  $author  $paper_url" >>"$CACHE/$YEAR.txt"
                 fi
 
             else
@@ -435,14 +436,11 @@ while [ "$i" -gt 0 ]; do
     echo -e "${MAGENTA}$i${NC} \c"
     ((i--))
     case $PROCEEDING in
-    'nips')
+    nips)
         t=($(echo ${url[$i]} | tr '/' ' '))
         t=${t[-1]%.pdf}
         ;;
-    'pmlr')
-        t=$(echo ${title[$i]} | tr '/' '?')
-        ;;
-    'jmlr')
+    pmlr | jmlr)
         t=$(echo ${title[$i]} | tr '/' '?')
         ;;
     esac
