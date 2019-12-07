@@ -128,9 +128,9 @@ wu19c.pdf               83%[+++++++++++++++======>     ] 287.05K  --.-KB/s  用�
 wu19c.pdf              100%[++++++++++++++++++++++====>] 343.12K  1.01KB/s  用时 48s
 ```
 
-When the connection is broken, wget can resume the download. Supplemental material will be merged with the main paper.
+When the connection is broken, wget can resume the download. Supplemental material will be automatically merged with the main paper.
 
-Previous downloaded papers are highlighted:
+Previous downloaded papers are highlighted and not selected by default:
 
 ```
 └─[$] <> paper-dl -p pmlr -v 97 -a "zhi-hua zhou"  # query by author
