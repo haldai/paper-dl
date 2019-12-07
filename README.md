@@ -90,7 +90,7 @@ You have multiple choosing manners
 - m-n, select the m-th paper to n-th paper, n - m + 1 in total
 - ^n, select all the papers except the n-th paper
 - ^m-n, select all the papers except the m-th paper to n-th paper
-- default null, select all the papers except downloaded before
+- default, select all the papers except downloaded before
 
 ```
 └─[$] <> paper-dl -p pmlr -v 97 -k "margin"  # ICML'2019
