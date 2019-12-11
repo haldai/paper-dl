@@ -57,7 +57,7 @@ These two options are mutually exclusive. If neither of them given, it will show
 
 The default save directory is ~/paper-dl, you can reset it in paper-dl.conf.
 
-When you query some proceeding for the first time, it will take a few moment (up to your bandwidth) to cache the html file to speed up the subsequent queries. The defaul cache directory is ~/.cache/paper-dl. Of course you can reset it in paper-dl.conf.
+When you query some proceeding for the first time, it will take a few moment (up to your bandwidth) to cache the html file to speed up the subsequent queries. The default cache directory is ~/.cache/paper-dl. Of course you can reset it in paper-dl.conf.
 
 ## Examples
 
