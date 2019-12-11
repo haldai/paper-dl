@@ -127,7 +127,6 @@ function initial() {
     if [ "$local_ver" != "$server_ver" ]; then # if local index.html out-of-date
         rm -f $index_file
         echo -e "${YELLOW}::${NC} Cache the index page"
-        echo "wget -t 0 -q --show-progress -O $CACHE/index-$server_ver.html $HOST"
         wget -t 0 -q --show-progress -O $CACHE/index-$server_ver.html $HOST
     fi
 
