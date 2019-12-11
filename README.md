@@ -8,17 +8,21 @@ In the future, we will consider supporting AAAI, IJCAI, KDD, etc.
 
 ## Dependencies
 
-- wget: download tool
-- unzip: extract supplementary
-- ghostscript: merge pdf files
+- extra/wget: retrieve files from the Web
+- extra/unzip: extract files in .zip archives
+- extra/ghostscript: merge pdf files
+- extra/recode: converts files between various character sets
+- aur/[html-xml-utils](https://www.w3.org/Tools/HTML-XML-utils/): simple utilities for manipulating HTML and XML files
 
 ## Installation
 
 ```shell
 git clone https://github.com/murongxixi/paper-dl.git
 cd paper-dl
-sudo ./install.sh  # /usr/local/bin/
+./install.sh  # set in paper-dl.conf, default ~/.local/bin
 ```
+
+Please add ~/.local/bin to \$PATH.
 
 ## Usage
 
@@ -36,11 +40,11 @@ paper-dl -p proceeding -v volume
 paper-dl -p proceeding -y year
 ```
 
-Option `-p proceeding` is required at any time (except with `-h` or `-V`). Currently it must take value from {nips, pmlr, jmlr}.
+Option `-p proceeding` is required at any time (except with `-h`, `-V`). Currently it must take value from {nips, pmlr, jmlr}.
 
-Options `-v volume` and `-y year` are semi-required (except with `-h`, `-V`, `-c`), i.e., one and only one of them should be given.
+Options `-v volume` and `-y year` are semi-required (except with `-h`, `-V`), i.e., one and only one of them should be given.
 
-PMLR and JMLR can only be queried by volume. NIPS can be queried by both, thus `paper-dl -p nips -v 1` is the same as `paper-dl -p nips -y 1988`. Note that the nips'1987 proceeding doesn't have a volume number, so it's encouraged to query by year.
+PMLR and JMLR can only be queried by volume number. NIPS can be queried by both, thus `paper-dl -p nips -v 1` is the same as `paper-dl -p nips -y 1988`. Note that the nips'1987 proceeding doesn't have a volume number, so it's encouraged to query by year.
 
 - With keywords and author
 
@@ -49,42 +53,45 @@ paper-dl -p proceeding (-v volume | -y year) -k "keyword1 keyword2 ..."
 paper-dl -p proceeding (-v volume | -y year) -a "author name"
 ```
 
-These two options are mutually exclusive. If neither of them is given, it will show the whole proceeding.
+These two options are mutually exclusive. If neither of them given, it will show the whole proceeding.
 
-- Delete out-of-date or corrupt cache files
+- Cache files
 
-When you query some proceeding for the first time, it will take a few moment to cache the html files to speed up the subsequent queries. If these files are out-of-date due to the update on server or corrupted when downlod being interrupted, you can delete them by `-c` option:
-
-```shell
-paper-dl -p proceeding [-v volume | -y year] -c
-```
-
-If volume and year are both not given, it will delete the index.html, e.g., http://proceedings.mlr.press/index.html, otherwise the corresponding proceeding page will be removed, e.g., http://proceedings.mlr.press/v97/.
+When you query some proceeding for the first time, it will take a few moment to cache the html file to speed up the subsequent queries. The cache directory can be set in paper-dl.conf.
 
 ## Examples
 
 If neither keywords nor author given, show all the papers:
 
 ```
-└─[$] <> paper-dl -p nips -y 2018  # -y 1987|1988|...|2019
-1009 GroupReduce: Block-Wise Low-Rank Approximation for Neural Language Model Shrinking
-    Patrick Chen, Si Si, Yang Li, Ciprian Chelba, Cho-Jui Hsieh
-1008 The Price of Fair PCA: One Extra dimension
-    Samira Samadi, Uthaipon Tantipongpipat, Jamie H. Morgenstern, Mohit Singh, Santosh Vempala
-1007 Transfer of Deep Reactive Policies for MDP Planning
-    Aniket (Nick) Bajpai, Sankalp Garg, Mausam
-……
-3 Kalman Normalization: Normalizing Internal Representations Across Network Layers
-    Guangrun Wang, jiefeng peng, Ping Luo, Xinjiang Wang, Liang Lin
-2 Structure-Aware Convolutional Neural Networks
-    Jianlong Chang, Jie Gu, Lingfeng Wang, GAOFENG MENG, SHIMING XIANG, Chunhong Pan
-1 Efficient Algorithms for Non-convex Isotonic Regression through Submodular Optimization
-    Francis Bach
-==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (1009)
+┌─[murongxixi@murongxixi-xps] - [~] - [三 12月 11, 16:05]
+└─[$] <> paper-dl -p nips -y 2019  # -y 1987|1988|...|2019
+1427 Mixtape: Breaking the Softmax Bottleneck Efficiently
+    Zhilin Yang, Thang Luong, Russ R. Salakhutdinov, Quoc V. Le
+    [Paper] [Bib] [Supplemental]
+1426 Enabling hyperparameter optimization in sequential autoencoders for spiking neural data
+    Mohammad Reza Keshtkaran, Chethan Pandarinath
+    [Paper] [Bib] [Supplemental]
+1425 Re-randomized Densification for One Permutation Hashing and Bin-wise Consistent Weighted Sampling
+    Ping Li, Xiaoyun Li, Cun-Hui Zhang
+    [Paper] [Bib] [Supplemental]
+...
+3 Stochastic Shared Embeddings: Data-driven Regularization of Embedding Layers
+    Liwei Wu, Shuqing Li, Cho-Jui Hsieh, James L. Sharpnack
+    [Paper] [Bib] [Supplemental]
+2 ViLBERT: Pretraining Task-Agnostic Visiolinguistic Representations for Vision-and-Language Tasks
+    Jiasen Lu, Dhruv Batra, Devi Parikh, Stefan Lee
+    [Paper] [Bib] [Supplemental]
+1 Multimodal Model-Agnostic Meta-Learning via Task-Aware Modulation
+    Risto Vuorio, Shao-Hua Sun, Hexiang Hu, Joseph J. Lim
+    [Paper] [Bib] [Supplemental]
+==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (1427)
 ==>
 ```
 
-You have multiple choosing manners
+A quite tedious list, thus we encourage you to query with keywords or author.
+
+You have multiple choosing manners for downloading papers:
 
 - n, select the n-th paper
 - m-n, select the m-th paper to n-th paper, n - m + 1 in total
@@ -93,51 +100,54 @@ You have multiple choosing manners
 - default, select all the papers except those downloaded before
 
 ```
+┌─[murongxixi@murongxixi-xps] - [~] - [三 12月 11, 16:27]
 └─[$] <> paper-dl -p pmlr -v 97 -k "margin"  # ICML'2019
 5 Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin
     Xi-Zhu Wu, Song Liu, Zhi-Hua Zhou
+    [Paper]
 4 Does Data Augmentation Lead to Positive Margin?
     Shashank Rajput, Zhili Feng, Zachary Charles, Po-Ling Loh, Dimitris Papailiopoulos
+    [Paper] [Supplemental]
 3 Lexicographic and Depth-Sensitive Margins in Homogeneous and Non-Homogeneous Deep Models
     Mor Shpigel Nacson, Suriya Gunasekar, Jason Lee, Nathan Srebro, Daniel Soudry
+    [Paper] [Supplemental]
 2 Optimal Minimal Margin Maximization with Boosting
     Alexander Mathiasen, Kasper Green Larsen, Allan Grønlund
+    [Paper]
 1 Fast and Flexible Inference of Joint Distributions from their Marginals
     Charlie Frogner, Tomaso Poggio
+    [Paper] [Supplemental]
 ==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (5)
 ==> 2 4-5
 
 1/3 (33.33%) Optimal Minimal Margin Maximization with Boosting Alexander Mathiasen, Kasper Green Larsen, Allan Grønlund
-:: Download paper
-mathiasen19a.pdf        23%[=====>                     ] 333.36K  2.98KB/s  用时 2m 59s
-mathiasen19a.pdf        35%[++++++==>                  ] 497.03K  3.35KB/s  用时 67s
-mathiasen19a.pdf       100%[+++++++++=================>]   1.38M  4.08KB/s  用时 4m 5s
+:: Download Paper
+mathiasen19a.pdf       100%[==========================>]   1.38M  10.5KB/s  用时 2m 25s
 
 2/3 (66.67%) Does Data Augmentation Lead to Positive Margin? Shashank Rajput, Zhili Feng, Zachary Charles, Po-Ling Loh, Dimitris Papailiopoulos
-:: Download paper
-rajput19a.pdf            5%[>                          ]  38.55K  --.-KB/s  用时 16m 3s
-rajput19a.pdf          100%[+=========================>] 700.19K  3.60KB/s  用时 1m 52s
-:: Download supplemental
-rajput19a-supp.pdf      31%[=======>                   ] 242.97K  3.56KB/s  用时 1m 45s
-rajput19a-supp.pdf     100%[++++++++==================>] 777.58K  5.22KB/s  用时 91s
+:: Download Paper
+rajput19a.pdf          100%[==========================>] 700.19K  15.0KB/s  用时 58s
+:: Download Supplemental
+rajput19a-supp.pdf     100%[==========================>] 777.58K  19.0KB/s  用时 53s
 
 3/3 (100.00%) Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin Xi-Zhu Wu, Song Liu, Zhi-Hua Zhou
-:: Download paper
-wu19c.pdf               58%[==============>            ] 199.86K  2.19KB/s  用时 81s
-wu19c.pdf               83%[+++++++++++++++======>     ] 287.05K  --.-KB/s  用时 16m 18s
-wu19c.pdf              100%[++++++++++++++++++++++====>] 343.12K  1.01KB/s  用时 48s
+:: Download Paper
+wu19c.pdf              100%[==========================>] 343.12K  20.5KB/s  用时 15s
 ```
 
-When the connection is broken, wget can resume the download. Supplemental material will be automatically merged with the main paper.
+Besides paper, other listed files such as bib, supp, erratum etc., will also be downloaded. Supp and erratum will be automatically merged with the main paper.
 
 Previous downloaded papers are highlighted and not selected by default:
 
 ```
+┌─[murongxixi@murongxixi-xps] - [~] - [三 12月 11, 16:32]
 └─[$] <> paper-dl -p pmlr -v 97 -a "zhi-hua zhou"  # query by author
 2 Adaptive Regret of Convex and Smooth Functions
     Lijun Zhang, Tie-Yan Liu, Zhi-Hua Zhou
-1 Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin (Downloaded)
+    [Paper]
+1 Heterogeneous Model Reuse via Optimizing Multiparty Multiclass Margin (downloaded)
     Xi-Zhu Wu, Song Liu, Zhi-Hua Zhou
+    [Paper]
 ==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (2-1=1)
 ==>
 ```
@@ -145,53 +155,71 @@ Previous downloaded papers are highlighted and not selected by default:
 Query by multiple keywords:
 
 ```
+┌─[murongxixi@murongxixi-xps] - [~] - [三 12月 11, 16:34]
 └─[$] <> paper-dl -p jmlr -v 20 -k "error bound"
-2 Relative Error Bound Analysis for Nuclear Norm Regularized Matrix Completion (Downloaded)
+2 Relative Error Bound Analysis for Nuclear Norm Regularized Matrix Completion
     Lijun Zhang, Tianbao Yang, Rong Jin, Zhi-Hua Zhou
+    [Paper] [Bib]
 1 Scalable Kernel K-Means Clustering with Nystrom Approximation: Relative-Error Bounds
     Shusen Wang, Alex Gittens, Michael W. Mahoney
-==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (2-1=1)
+    [Paper] [Bib]
+==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (2)
 ==>
 ```
 
 All the special topics and issues on [JMLR](http://www.jmlr.org/papers/) can be queried by volume, e.g.,
 
 ```
+┌─[murongxixi@murongxixi-xps] - [~] - [三 12月 11, 16:35]
 └─[$] <> paper-dl -p jmlr -v "Large Scale Learning"
-8 Erratum: SGDQN is Less Careful than Expected (Downloaded)
+8 Erratum: SGDQN is Less Careful than Expected
     Antoine Bordes, Léon Bottou, Patrick Gallinari, Jonathan Chang, S. Alex Smith
+    [Paper]
 7 Large Scale Online Learning of Image Similarity Through Ranking
     Gal Chechik, Varun Sharma, Uri Shalit, Samy Bengio
+    [Paper]
 6 A Streaming Parallel Decision Tree Algorithm
     Yael Ben-Haim, Elad Tom-Tov
-5 Hash Kernels for Structured Data (Downloaded)
+    [Paper]
+5 Hash Kernels for Structured Data
     Qinfeng Shi, James Petterson, Gideon Dror, John Langford, Alex Smola, S.V.N. Vishwanathan
-4 Optimized Cutting Plane Algorithm for Large-Scale Risk Minimization (Downloaded)
+    [Paper]
+4 Optimized Cutting Plane Algorithm for Large-Scale Risk Minimization
     Vojtěch Franc, Sören Sonnenburg
-3 Hybrid MPI/OpenMP Parallel Linear Support Vector Machine Training (Downloaded)
+    [Paper]
+3 Hybrid MPI/OpenMP Parallel Linear Support Vector Machine Training
     Kristian Woodsend, Jacek Gondzio
-2 SGD-QN: Careful Quasi-Newton Stochastic Gradient Descent (Downloaded)
+    [Paper]
+2 SGD-QN: Careful Quasi-Newton Stochastic Gradient Descent
     Antoine Bordes, Léon Bottou, Patrick Gallinari
+    [Paper]
 1 A Parameter-Free Classification Method for Large Scale Learning
     Marc Boullé
-==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (8-5=3)
+    [Paper]
+==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (8)
 ==>
 ```
 
 and
 
 ```
+┌─[murongxixi@murongxixi-xps] - [~] - [三 12月 11, 16:36]
 └─[$] <> paper-dl -p jmlr -v "Inductive Logic Programming"
 5 Learning Semantic Lexicons from a Part-of-Speech and Semantically Tagged Corpus Using Inductive Logic Programming
     Vincent Claveau, Pascale Sébillot, Cécile Fabre, Pierrette Bouillon
+    [Paper]
 4 Query Transformations for Improving the Efficiency of ILP Systems
     Vítor Santos Costa, Ashwin Srinivasan Rui Camacho, Hendrik Blockeel, Bart Demoen, Gerda Janssens, Jan Struyf, Henk Vandecasteele, Wim Van Laer
+    [Paper]
 3 Relational Learning as Search in a Critical Region
     Marco Botta, Attilio Giordana, Lorenza Saitta, Michèle Sebag
+    [Paper]
 2 ILP: A Short Look Back and a Longer Look Forward
     David Page, Ashwin Srinivasan
+    [Paper]
 1 Introduction to the Special Issue on Inductive Logic Programming
     James Cussens, Alan M. Frisch
+    [Paper]
 ==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all (5)
 ==>
 ```
