@@ -1,0 +1,208 @@
+#!/usr/bin/env bash
+
+# VERSION='framework changes.new features.bug fixes'
+VERSION='2.1.1'
+
+BLACK='\033[0;30m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+GRAY='\033[0;37m'
+DARK_GRAY='\033[1;30m'
+DARK_RED='\033[1;31m'
+DARK_GREEN='\033[1;32m'
+BRILLIANT_YELLOW='\033[1;33m'
+DARK_BLUE='\033[1;34m'
+DARK_MAGENTA='\033[1;35m'
+DARK_CYAN='\033[1;36m'
+WHITE='\033[1;37m'
+NC='\033[0;0m'
+
+PROCEEDING=''
+VOLUME=''
+YEAR=''
+KEYWORD=''
+AUTHOR=''
+
+declare -A HOST_ARRAY=(
+    ['nips']='http://papers.nips.cc'
+    ['pmlr']='http://proceedings.mlr.press/'
+    ['jmlr']='http://www.jmlr.org/papers/'
+)
+
+declare -A CONFIG
+
+declare -A HOST_LATEST=(
+    ['nips']='2019'
+    ['pmlr']='106'
+    ['jmlr']='20-Learning-In'
+)
+
+function show_help() {
+    echo -e "Operations:"
+    echo -e "    paper-dl {-h --help}       \033[4;1;34mhttps://github.com/murongxixi/paper-dl${NC}"
+    echo -e "    paper-dl {-V --version}\n"
+    echo -e "Configuration options:"
+    echo -e "    -p --proceeding            nips|pmlr|jmlr         (required)"
+    echo -e "    -v --volume                query by volume        (semi-required)"
+    echo -e "    -y --year                  query by year          (semi-required)"
+    echo -e "    -k --keyword               query by keyword       (optional)"
+    echo -e "    -a --author                query by author        (optional)"
+}
+
+function show_version() {
+    echo -e "paper-dl v${DARK_RED}$VERSION${NC} - ${YELLOW}murongxixi${NC}@\033[4;1;34mhttps://github.com/murongxixi/paper-dl${NC}"
+}
+
+function parse_args() {
+    for var in "$@"; do
+        if [ "$flag" = 1 ]; then
+            case $i in
+            0) PROCEEDING=$var ;;
+            1) VOLUME=$var ;;
+            2) YEAR=$var ;;
+            3) KEYWORD=$var ;;
+            4) AUTHOR=$var ;;
+            esac
+            flag=0
+        else
+            case $var in
+            '-h' | '--help') show_help && exit 1 ;;
+            '-V' | '--version') show_version && exit 1 ;;
+            '-p' | '--proceeding') flag=1 && i=0 ;;
+            '-v' | '--volume') flag=1 && i=1 ;;
+            '-y' | '--year') flag=1 && i=2 ;;
+            '-k' | '--keyword') flag=1 && i=3 ;;
+            '-a' | '--author') flag=1 && i=4 ;;
+            *) echo -e "${RED}Error: unknown arg!${NC}" && exit 1 ;;
+            esac
+        fi
+    done
+
+    if [ "$flag" = 1 ]; then
+        echo -e "${RED}Error: args incomplete!${NC}" && exit 1
+    fi
+}
+
+function check_args() {
+    case $PROCEEDING in
+    'nips')
+        if [ -z "$VOLUME" ] && [ -z $YEAR ]; then
+            echo -e "${RED}Error: for ${DARK_RED}$PROCEEDING${RED}, args ${DARK_RED}volume${RED} and ${DARK_RED}year${RED} can not be both absent!${NC}" && exit 1
+        fi
+        if [ -z "$YEAR" ]; then
+            YEAR=$(($VOLUME + 1987))
+        fi
+        ;;
+    'pmlr' | 'jmlr')
+        if [ -z "$VOLUME" ]; then
+            echo -e "${RED}Error: for ${DARK_RED}$PROCEEDING${RED}, arg ${DARK_RED}volume${RED} is required!${NC}" && exit 1
+        fi
+        YEAR="$VOLUME"
+        ;;
+    *)
+        echo -e "${RED}Error: arg ${DARK_RED}proceeding${RED} must be nips|pmlr|jmlr!${NC}" && exit 1
+        ;;
+    esac
+}
+
+function initial() {
+    HOST=${HOST_ARRAY[$PROCEEDING]}
+
+    for line in $(cat $HOME/.config/paper-dl.conf); do
+        key=$(echo $line | cut -d '=' -f 1)
+        value=$(echo $line | cut -d '=' -f 2 | sed -e "s/~//g")
+        CONFIG[$key]=$value
+    done
+    SAVE=$HOME${CONFIG['save']}${PROCEEDING^^}
+    CACHE=$HOME${CONFIG['cache']}$PROCEEDING
+
+    index_file=$(find $CACHE -maxdepth 1 -regextype posix-extended -iregex '.*index-.*\.html') # local index.html
+    local_ver=$(echo $index_file | sed -n 's/.*index-\(.*\)\.html/\1/p')
+    server_ver=${HOST_LATEST[$PROCEEDING]}
+
+    if [ "$local_ver" != "$server_ver" ]; then # if local index.html out-of-date
+        rm -f $index_file
+        echo -e "${YELLOW}::${NC} Cache the index page"
+        echo "wget -t 0 -q --show-progress -O $CACHE/index-$server_ver.html $HOST"
+        wget -t 0 -q --show-progress -O $CACHE/index-$server_ver.html $HOST
+    fi
+
+    txt_file=$(find $CACHE -maxdepth 1 -regextype posix-extended -iregex ".*$YEAR-.*\.txt")
+    ver=$(echo $txt_file | sed -n 's/.*$YEAR-\(.*\)\.txt/\1/p')
+    if [ "$ver" != "$VERSION" ]; then
+        rm -f $txt_file
+    fi
+}
+
+function sum() {
+    s=0
+    for var in $@; do
+        s=$(($s + $var))
+    done
+    echo $s
+}
+
+function parse_select_options() {
+    i=0
+    while [ $i -lt $2 ]; do
+        select[$i]=0 && ((i++))
+    done
+
+    for var in $1; do
+        # for input like 2-4, set select[1:3] = 1
+        if [ $(echo $var | awk '{print($0~/^[1-9][0-9]*-[1-9][0-9]*$/)}') = 1 ]; then
+            i=$(echo $var | cut -d '-' -f 1) && j=$(echo $var | cut -d '-' -f 2)
+            while [ $i -le $j ] && [ $i -le $2 ]; do
+                select[$(($i - 1))]=1 && ((i++))
+            done
+        # for input like 2, set select[1] = 1
+        elif [ $(echo $var | awk '{print($0~/^[1-9][0-9]*$/)}') = 1 ]; then
+            if [ $var -le $2 ]; then
+                select[$(($var - 1))]=1
+            fi
+        fi
+    done
+
+    for var in $1; do
+        # for input like ^2-4, set select[0] = 1 and select[4:] = 1
+        if [ $(echo $var | awk '{print($0~/^[\^][0-9]*-[1-9][0-9]*$/)}') = 1 ]; then
+            i=$(echo ${var:1} | cut -d '-' -f 1) && j=$(echo ${var:1} | cut -d '-' -f 2) && k=0
+            while [ $k -lt $2 ]; do
+                if [ $k -lt $i ] || [ $k -ge $j ]; then
+                    select[$k]=1
+                fi
+                ((k++))
+            done
+        # for input like ^2, set select[0] = 1 and select[2:] = 1
+        elif [ $(echo $var | awk '{print($0~/^[\^][1-9][0-9]*$/)}') = 1 ]; then
+            k=0
+            while [ $k -lt $2 ]; do
+                if [ $k != $((${var:1} - 1)) ]; then
+                    select[$k]=1
+                fi
+                ((k++))
+            done
+        fi
+    done
+
+    for var in $1; do
+        # for input like ^2-4, set select[1:3] = 0
+        if [ $(echo $var | awk '{print($0~/^[\^][0-9]*-[1-9][0-9]*$/)}') = 1 ]; then
+            i=$(echo ${var:1} | cut -d '-' -f 1) && j=$(echo ${var:1} | cut -d '-' -f 2)
+            while [ $i -le $j ] && [ $i -le $2 ]; do
+                select[$(($i - 1))]=0 && ((i++))
+            done
+        # for input like ^2, set select[1] = 0
+        elif [ $(echo $var | awk '{print($0~/^[\^][1-9][0-9]*$/)}') = 1 ]; then
+            if [ ${var:1} -le $2 ]; then
+                select[$((${var:1} - 1))]=0
+            fi
+        fi
+    done
+
+    echo ${select[@]}
+}
