@@ -120,6 +120,8 @@ function initial() {
     SAVE=$HOME${CONFIG['save']}${PROCEEDING^^}
     CACHE=$HOME${CONFIG['cache']}$PROCEEDING
 
+    mkdir -p $SAVE && mkdir -p $CACHE
+
     index_file=$(find $CACHE -maxdepth 1 -regextype posix-extended -iregex '.*index-.*\.html') # local index.html
     local_ver=$(echo $index_file | sed -n 's/.*index-\(.*\)\.html/\1/p')
     server_ver=${HOST_LATEST[$PROCEEDING]}
