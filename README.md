@@ -19,10 +19,8 @@ In the future, we will consider supporting AAAI, IJCAI, KDD, etc.
 ```shell
 git clone https://github.com/murongxixi/paper-dl.git
 cd paper-dl
-./install.sh  # set in paper-dl.conf, default ~/.local/bin
+./install.sh  # remember to add ~/.local/bin to $PATH
 ```
-
-Please add ~/.local/bin to \$PATH.
 
 ## Usage
 
@@ -55,9 +53,11 @@ paper-dl -p proceeding (-v volume | -y year) -a "author name"
 
 These two options are mutually exclusive. If neither of them given, it will show the whole proceeding.
 
-- Cache files
+- Configuration
 
-When you query some proceeding for the first time, it will take a few moment to cache the html file to speed up the subsequent queries. The cache directory can be set in paper-dl.conf.
+The default save directory is ~/paper-dl, you can reset it in paper-dl.conf.
+
+When you query some proceeding for the first time, it will take a few moment (up to your bandwidth) to cache the html file to speed up the subsequent queries. The defaul cache directory is ~/.cache/paper-dl. Of course you can reset it in paper-dl.conf.
 
 ## Examples
 
