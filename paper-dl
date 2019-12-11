@@ -32,7 +32,6 @@ fi
 # extract the content of $YEAR.html and save to $YEAR-$VERSION.txt
 # $YEAR-$VERSION.txt format: title@author@url, where @ is the separator
 # url format: Paper~paper_url[,Supplemental~supplemental_url,Bib~bib_url,Erratum~erratum_url]
-rm -f "$CACHE/$YEAR-$VERSION.txt"
 if [ ! -f "$CACHE/$YEAR-$VERSION.txt" ]; then
     case $PROCEEDING in
     'nips')
