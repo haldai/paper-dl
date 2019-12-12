@@ -138,9 +138,10 @@ else
     # start download
     if [ "$select_total" -gt 0 ]; then
         cd "$SAVE_DIR" && i=0 && j=0
-        while [ "$i" -lt "$query_total" ]; do
+        for line in $(eval $command | tr ' ' '%>_<%'); do
             if [ "${select[$i]}" = 1 ]; then
-                line=$(eval $command | sed -n "$(($i + 1))p")
+
+                line=$(echo "$line" | tr '%>_<%' ' ')
                 title=$(echo "$line" | cut -d '@' -f 1)
                 author=$(echo $line | cut -d '@' -f 2)
                 url=$(echo $line | cut -d '@' -f 3)
@@ -175,17 +176,14 @@ else
                             'zip')
                                 merge_command="gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile='${paper_name%.pdf}-merge.pdf' '$paper_name'"
                                 mkdir -p supp && unzip -q "$supp_name" -d supp && flag=0
-                                if [ -d "supp/__MACOSX" ]; then
-                                    rm -rf "supp/__MACOSX"
-                                fi
-                                for line in $(find supp -maxdepth 3 -regextype posix-extended -iregex '.*\.(pdf)' | tr ' ' '?'); do
+                                for line in $(find supp -maxdepth 3 -regextype posix-extended -iregex '.*\.(pdf)' | grep -v "MACOSX" | tr ' ' '@@'); do
                                     if [ -n "$line" ]; then
                                         merge_command="$merge_command '$line'"
                                         flag=1
                                     fi
                                 done
                                 if [ "$flag" = 1 ]; then
-                                    merge_command=$(echo "$merge_command" | tr '?' ' ')
+                                    merge_command=$(echo "$merge_command" | tr '@@' ' ')
                                     eval "$merge_command"
                                 fi
                                 rm -rf supp
