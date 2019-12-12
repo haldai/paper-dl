@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # VERSION='framework changes.new features.bug fixes'
-VERSION='2.1.1'
+VERSION='2.1.2'
 
 BLACK='\033[0;30m'
 RED='\033[0;31m'
@@ -118,9 +118,7 @@ function initial() {
         CONFIG[$key]=$value
     done
     SAVE=$HOME${CONFIG['save']}${PROCEEDING^^}
-    CACHE=$HOME${CONFIG['cache']}$PROCEEDING
-
-    mkdir -p $SAVE && mkdir -p $CACHE
+    CACHE=$HOME${CONFIG['cache']}$PROCEEDING && mkdir -p $CACHE
 
     index_file=$(find $CACHE -maxdepth 1 -regextype posix-extended -iregex '.*index-.*\.html') # local index.html
     local_ver=$(echo $index_file | sed -n 's/.*index-\(.*\)\.html/\1/p')

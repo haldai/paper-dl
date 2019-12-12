@@ -18,11 +18,11 @@ case $PROCEEDING in # extract the name and url of the proceeding
     ;;
 esac
 
-mkdir -p "$SAVE_DIR"
-
 if [ -z "$PROCEEDING_URL" ]; then
     echo -e "${RED}Warning: no proceedings meet the query requirements!${NC}" && exit 1
 fi
+
+mkdir -p "$SAVE_DIR"
 
 if [ ! -f "$CACHE/$YEAR.html" ]; then
     echo -e "${YELLOW}::${NC} Cache the proceeding page"
@@ -93,13 +93,10 @@ elif [ -n "$AUTHOR" ]; then
     command="$command | grep '$author'"
 fi
 
-timestamp=$(date "+%G-%m-%d#%H:%M:%S")
-eval $command >"$CACHE/query-$timestamp.txt"
-
 # show query results in descending order
 LOCAL_PAPER=$(ls "$SAVE_DIR" | sed -e 's/\\//g') # local downloaded paper list, delete all \
 
-cat "$CACHE/query-$timestamp.txt" | awk -F '@' -v LP="$LOCAL_PAPER" '
+eval $command | awk -F '@' -v LP="$LOCAL_PAPER" '
     BEGIN { i = 0; } { title[i] = $1; author[i] = $2; url[i] = $3; i++; } 
     END { for (i = NR-1; i >= 0; i--) {
             t = title[i]; gsub("\\\\", "", t); gsub("/", "#", t);
@@ -113,97 +110,95 @@ cat "$CACHE/query-$timestamp.txt" | awk -F '@' -v LP="$LOCAL_PAPER" '
             printf "\n";
         }}'
 
-select=($(cat "$CACHE/query-$timestamp.txt" | awk -F '@' -v LP="$LOCAL_PAPER" '
-    BEGIN { i = 0; } { title[i] = $1; i++; } 
-    END { for (i = 0; i < NR; i++) { 
-            t = title[i]; gsub("\\\\", "", t); gsub("/", "#", t);
-            if (index(LP, t) != 0) print 0; else print 1; 
-        }}'))
+select=($(eval $command | awk -F '@' -v LP="$LOCAL_PAPER" '{ 
+    gsub("\\\\", "", $1); gsub("/", "#", $1); 
+    if (index(LP, $1) != 0) print 0; else print 1; 
+    }'))
 
-query_total=$(cat "$CACHE/query-$timestamp.txt" | wc -l)
+query_total=${#select[@]}
 select_total=$(sum ${select[@]})
 downloaded=$(($query_total - $select_total))
 
 if [ $query_total = 0 ]; then
-    echo -e "${RED}Warning: no papers meet the query requirements!${NC}" && exit 1
+    echo -e "${RED}Warning: no papers meet the query requirements!${NC}"
+elif [ $downloaded = $query_total ]; then
+    echo -e "${RED}==> All papers have been downloaded!${NC}"
 else
-    if [ $downloaded = $query_total ]; then
-        echo -e "${RED}==> All papers have been downloaded!${NC}" && exit 1
-    elif [ $downloaded = 0 ]; then
+    if [ $downloaded = 0 ]; then
         echo -e "${YELLOW}==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all ($query_total)${NC}"
     else
         echo -e "${YELLOW}==> Papers to download (eg: 1 2 3, 1-3 or ^3), default all ($query_total-$downloaded=$select_total)${NC}"
     fi
     read -p $'\033[33m==> \033[0m' select_options
-fi
+    if [ -n "$select_options" ]; then
+        select=($(parse_select_options "$select_options" $query_total))
+        select_total=$(sum ${select[@]})
+    fi
 
-if [ -n "$select_options" ]; then
-    select=($(parse_select_options "$select_options" $query_total))
-    select_total=$(sum ${select[@]})
-fi
+    # start download
+    if [ "$select_total" -gt 0 ]; then
+        cd "$SAVE_DIR" && i=0 && j=0
+        while [ "$i" -lt "$query_total" ]; do
+            if [ "${select[$i]}" = 1 ]; then
+                line=$(eval $command | sed -n "$(($i + 1))p")
+                title=$(echo "$line" | cut -d '@' -f 1)
+                author=$(echo $line | cut -d '@' -f 2)
+                url=$(echo $line | cut -d '@' -f 3)
 
-# start download
-if [ "$select_total" -gt 0 ]; then
-    cd "$SAVE_DIR" && i=0 && j=0
-    while [ "$i" -lt "$query_total" ]; do
-        if [ "${select[$i]}" = 1 ]; then
-            line=$(sed -n "$(($i + 1))p" "$CACHE/query-$timestamp.txt")
-            title=$(echo "$line" | cut -d '@' -f 1)
-            author=$(echo $line | cut -d '@' -f 2)
-            url=$(echo $line | cut -d '@' -f 3)
+                ((j++))
+                awk 'BEGIN{printf "\033[35m\n%d/%d (%.2f%)\033[0m", '$j', '$select_total', (100 * '$j'/'$select_total')}'
+                echo -n " ${title} "
+                echo -e "${CYAN}\033[3m$author\033[23m${NC}"
 
-            ((j++))
-            awk 'BEGIN{printf "\033[35m\n%d/%d (%.2f%)\033[0m", '$j', '$select_total', (100 * '$j'/'$select_total')}'
-            echo -n " ${title} "
-            echo -e "${CYAN}\033[3m$author\033[23m${NC}"
+                title=${title//\//#} && mkdir -p "$title" && cd "$title"
 
-            title=${title//\//#} && mkdir -p "$title" && cd "$title"
+                url=($(echo $url | tr ',' ' '))
+                for var in ${url[@]}; do
+                    file_type=$(echo $var | cut -d '~' -f 1)
+                    file_url=$(echo $var | cut -d '~' -f 2)
 
-            url=($(echo $url | tr ',' ' '))
-            for var in ${url[@]}; do
-                file_type=$(echo $var | cut -d '~' -f 1)
-                file_url=$(echo $var | cut -d '~' -f 2)
+                    echo -e "${YELLOW}::${NC} Download $file_type"
+                    wget -t 0 -q --show-progress -P . $file_url
 
-                echo -e "${YELLOW}::${NC} Download $file_type"
-                wget -t 0 -q --show-progress -P . $file_url
-
-                if [ $file_type == 'Paper' ]; then # get paper name for the following merge step
-                    paper_name=$(echo $file_url | sed -e 's/\(.*\/\)//g')
-                fi
-
-                if [ $file_type == 'Supplemental' ] || [ $file_type == 'Erratum' ]; then
-                    supp_name=$(echo $file_url | sed -e 's/\(.*\/\)//g')
-                    ext_name=$(echo $supp_name | sed -e 's/\(.*\.\)//g')
-                    if [ -f "$supp_name" ]; then # if supp file exists
-                        case ${ext_name,,} in
-                        'pdf')
-                            gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile="${paper_name%.pdf}-merge.pdf" "$paper_name" "$supp_name"
-                            ;;
-                        'zip')
-                            merge_command="gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile='${paper_name%.pdf}-merge.pdf' '$paper_name'"
-                            mkdir -p supp && unzip -q "$supp_name" -d supp && flag=0
-                            for line in $(find supp -maxdepth 1 -regextype posix-extended -iregex '.*\.(pdf)' | tr ' ' '?'); do
-                                if [ -n "$line" ]; then
-                                    merge_command="$merge_command '$line'"
-                                    flag=1
-                                fi
-                            done
-                            if [ "$flag" = 1 ]; then
-                                merge_command=$(echo "$merge_command" | tr '?' ' ')
-                                eval "$merge_command"
-                            fi
-                            rm -rf supp
-                            ;;
-                        esac
+                    if [ $file_type == 'Paper' ]; then # get paper name for the following merge step
+                        paper_name=$(echo $file_url | sed -e 's/\(.*\/\)//g')
                     fi
-                fi
-            done
-            cd ..
-        fi
-        ((i++))
-    done
-else
-    echo -e "${RED}Warning: there is nothing to do!${NC}"
-fi
 
-rm -f "$CACHE/query-$timestamp.txt"
+                    if [ $file_type == 'Supplemental' ] || [ $file_type == 'Erratum' ]; then
+                        supp_name=$(echo $file_url | sed -e 's/\(.*\/\)//g')
+                        ext_name=$(echo $supp_name | sed -e 's/\(.*\.\)//g')
+                        if [ -f "$supp_name" ]; then # if supp file exists
+                            case ${ext_name,,} in
+                            'pdf')
+                                gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile="${paper_name%.pdf}-merge.pdf" "$paper_name" "$supp_name"
+                                ;;
+                            'zip')
+                                merge_command="gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile='${paper_name%.pdf}-merge.pdf' '$paper_name'"
+                                mkdir -p supp && unzip -q "$supp_name" -d supp && flag=0
+                                if [ -d "supp/__MACOSX" ]; then
+                                    rm -rf "supp/__MACOSX"
+                                fi
+                                for line in $(find supp -maxdepth 3 -regextype posix-extended -iregex '.*\.(pdf)' | tr ' ' '?'); do
+                                    if [ -n "$line" ]; then
+                                        merge_command="$merge_command '$line'"
+                                        flag=1
+                                    fi
+                                done
+                                if [ "$flag" = 1 ]; then
+                                    merge_command=$(echo "$merge_command" | tr '?' ' ')
+                                    eval "$merge_command"
+                                fi
+                                rm -rf supp
+                                ;;
+                            esac
+                        fi
+                    fi
+                done
+                cd ..
+            fi
+            ((i++))
+        done
+    else
+        echo -e "${RED}Warning: there is nothing to do!${NC}"
+    fi
+fi
